@@ -1,0 +1,39 @@
+<div class="login-wrapper">
+  <div class="login-card">
+
+    <div class="logo">
+      <img src="images/aac_logo.png" alt="AAC logo"/>
+    </div>
+
+    <h1 class="title">AAC SUSTAV</h1>
+    <p class="subtitle">Prijavite se za nastavak</p>
+
+    <p class="register-text">
+      Nemate račun? <a routerLink="/register">Registrirajte se</a>
+    </p>
+
+    <div class="form">
+      <div class="field">
+        <label>Email ili korisničko ime</label>
+        <input
+          type="text"
+          [(ngModel)]="email"
+          placeholder="email@email.com"
+        />
+      </div>
+
+      <div class="field">
+        <label>Lozinka</label>
+        <input
+          type="password"
+          [(ngModel)]="lozinka"
+          placeholder="••••••••••••"
+        />
+        <a class="forgot" href="#">Zaboravljena lozinka?</a>
+      </div>
+
+      <button class="btn-login" (click)="onLogin()">Prijava</button>
+    </div>
+
+  </div>
+</div>

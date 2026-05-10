@@ -1,0 +1,50 @@
+<div class="reg-wrapper">
+  <div class="reg-card">
+
+    <div class="logo">
+      <img src="images/aac_logo.png" alt="AAC logo" />
+    </div>
+
+    <h1 class="title">AAC SUSTAV</h1>
+    <p class="subtitle">Registrirajte se za nastavak</p>
+
+    <div class="form">
+
+      <div class="row">
+        <div class="field">
+          <input type="text" [(ngModel)]="ime" placeholder="Ime" />
+        </div>
+        <div class="field">
+          <input type="text" [(ngModel)]="prezime" placeholder="Prezime" />
+        </div>
+      </div>
+
+      <div class="field">
+        <input type="text" [(ngModel)]="uloga" placeholder="Uloga" />
+      </div>
+
+      <div class="field">
+        <input type="text" [(ngModel)]="fakultet" placeholder="Fakultet/Organizacija" />
+      </div>
+
+      <div class="field">
+        <input type="email" [(ngModel)]="email" placeholder="Email adresa" />
+      </div>
+
+      <div class="field">
+        <input type="email" [(ngModel)]="emailRepeat" placeholder="Ponovni unos emaila" />
+      </div>
+
+      <div class="field">
+        <input type="password" [(ngModel)]="lozinka" placeholder="Lozinka" />
+      </div>
+
+      <div class="field">
+        <input type="password" [(ngModel)]="lozinkaRepeat" placeholder="Ponovni unos lozinke" />
+      </div>
+
+      <button class="btn-reg" (click)="onRegistracija()">Registracija</button>
+
+    </div>
+  </div>
+</div>
