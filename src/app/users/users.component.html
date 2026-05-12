@@ -1,0 +1,103 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="m-0">Korisnici</h3>
+  
+    <p-button
+      label="Dodaj novog korisnika"
+      icon="pi pi-plus"
+      severity="success"
+      (click)="showCreateDialog()">
+    </p-button>
+  </div>
+  
+  <p-confirmDialog></p-confirmDialog>
+  
+  <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template #header>
+      <tr>
+        <th>Ime</th>
+        <th>Prezime</th>
+        <th>Email</th>
+        <th>Organizacija</th>
+        <th>Uloga</th>
+      </tr>
+    </ng-template>
+  
+    <ng-template #body let-user>
+      <tr>
+        <td>{{ user.name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>
+          {{ user.email }}
+        </td>
+        <td>{{ user.organization }}</td>
+        <td>{{ user.role }}</td>
+        <td>
+          <button
+            pButton
+            severity="secondary"
+            class="edit_button"
+            (click)="openUpdateDialog(user)">
+            Uredi
+          </button>
+  
+          <button
+            pButton
+            severity="danger"
+            (click)="confirmDelete(user)">
+            Obriši
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  
+  <p-dialog
+    header="Dodaj novog korisnika"
+    [modal]="true"
+    [(visible)]="visibleDialogForm"
+    [style]="{ width: '28rem' }"
+  >
+    <p class="text-muted mb-3">Ispunite informacije o korisniku.</p>
+  
+    <form [formGroup]="form" (ngSubmit)="submit()" class="app-dialog-form">
+  
+      <div class="app-dialog-field">
+        <label for="name" class="app-dialog-label">Ime</label>
+        <input pInputText id="name" formControlName="name" class="app-dialog-control" />
+      </div>
+  
+      <div class="app-dialog-field">
+        <label for="last_name" class="app-dialog-label">Prezime</label>
+        <input pInputText id="last_name" formControlName="last_name" class="app-dialog-control" />
+      </div>
+  
+      <div class="app-dialog-field">
+        <label for="email" class="app-dialog-label">Email</label>
+        <input pInputText id="email" formControlName="email" class="app-dialog-control" />
+      </div>
+  
+      <div class="app-dialog-field">
+        <label for="organization" class="app-dialog-label">Organizacija</label>
+        <input pInputText id="organization" formControlName="organization" class="app-dialog-control" />
+      </div>
+  
+      <div class="app-dialog-field">
+        <label for="role" class="app-dialog-label">Uloga</label>
+        <input pInputText id="role" formControlName="role" class="app-dialog-control" />
+      </div>
+  
+      <div class="app-dialog-actions">
+        <p-button
+          label="Cancel"
+          severity="secondary"
+          (click)="visibleDialogForm = false">
+        </p-button>
+  
+        <p-button
+          type="submit"
+          label="Spremi">
+        </p-button>
+      </div>
+  
+    </form>
+  </p-dialog>
