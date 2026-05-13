@@ -1,0 +1,231 @@
+.events-page {
+    padding: 2rem;
+    background: #f5f6f8;
+    min-height: 100vh;
+}
+
+/* HEADER */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-header h1 {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* GRID */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 1.5rem;
+}
+
+/* CARD */
+.event-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* indikator (gore lijevo) */
+.card-indicator {
+    width: 35px;
+    height: 18px;
+    border-radius: 8px;
+    background: #cbd5e1;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+}
+
+/* sadržaj */
+.card-content h3 {
+    margin: 0;
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.meta {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.meta span {
+    margin: 0 6px;
+}
+
+/* akcije */
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-5px);
+    transition: all 0.25s ease;
+}
+
+/* expanded stanje */
+.event-card.expanded .card-details {
+    max-height: 500px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.detail-row span:first-child {
+    color: #6b7280;
+}
+
+.detail-description {
+    margin-top: 0.5rem;
+}
+
+.detail-description span {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.detail-description p {
+    margin: 4px 0 0;
+    font-size: 14px;
+}
+/* DIALOG */
+::ng-deep .event-dialog .p-dialog {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    background: #ffffff !important;
+}
+
+::ng-deep .event-dialog .p-dialog-header {
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 1.25rem 1.5rem;
+    color: #1e293b !important;
+}
+
+::ng-deep .event-dialog .p-dialog-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b !important;
+}
+
+::ng-deep .event-dialog .p-dialog-content {
+    padding: 1.5rem;
+    background: #ffffff !important;
+    color: #374151 !important;
+}
+
+/* FORM */
+.dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #374151 !important;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #d1d5db !important;
+    padding: 0.5rem 0.75rem;
+    font-size: 14px;
+    background: #ffffff !important;
+    color: #374151 !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field input:focus,
+.field textarea:focus {
+    outline: none;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.field textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* FIELD ROW (kapacitet + trajanje) */
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* CHECKBOXI */
+.checkbox-row {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.75rem 1rem;
+    background: #f8fafc !important;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb !important;
+}
+
+.field-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.field-checkbox label {
+    font-size: 14px;
+    color: #374151 !important;
+    cursor: pointer;
+}
+
+/* FOOTER */
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e5e7eb !important;
+    margin-top: 0.5rem;
+}
+
+/* ERROR */
+.p-error {
+    font-size: 12px;
+    color: #ef4444 !important;
+}
