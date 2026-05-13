@@ -1,0 +1,84 @@
+<div class="page">
+
+    <!-- HEADER -->
+    <p-card styleClass="header-card">
+        <div class="header-grid">
+
+            <div class="intro">
+
+                <div class="intro-brand">
+                    <img src="images/aac_logo.png" alt="Logo" class="logo" />
+                    <div>
+                        <h1>Dobrodošli!</h1> <br>
+                        <h5>Upravljajte događanjima, edukacijama i digitaliziranim sadržajima na jednom mjestu.</h5>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- STATS -->
+            <div class="stats">
+                <p-card>
+                    <div class="stat">
+                        <i class="pi pi-calendar"></i>
+                        <div>
+                            <b>12</b>
+                            <span>događaja</span>
+                        </div>
+                    </div>
+                </p-card>
+
+                <p-card>
+                    <div class="stat">
+                        <i class="pi pi-users"></i>
+                        <div>
+                            <b>84</b>
+                            <span>korisnika</span>
+                        </div>
+                    </div>
+                </p-card>
+
+                <p-card>
+                    <div class="stat">
+                        <i class="pi pi-file"></i>
+                        <div>
+                            <b>237</b>
+                            <span>sadržaja</span>
+                        </div>
+                    </div>
+                </p-card>
+            </div>
+
+        </div>
+    </p-card>
+
+    <!-- MODULES -->
+    <div class="modules">
+
+        <p-card class="clickable-card" (click)="goTo('/events')" tabindex="0" role="button">
+            <i class="pi pi-calendar icon"></i>
+            <h3>Događaji</h3>
+            <p>Upravljanje događanjima i edukacijama</p>
+        </p-card>
+
+        <p-card>
+            <i class="pi pi-file icon"></i>
+            <h3>Sadržaji</h3>
+            <p>Digitalna arhiva i upravljanje dokumentima</p>
+        </p-card>
+
+        <p-card class="clickable-card" (click)="goTo('/users')" tabindex="0" role="button">
+            <i class="pi pi-users icon"></i>
+            <h3>Korisnici</h3>
+            <p>Pregled i upravljanje korisnicima</p>
+        </p-card>
+
+        <p-card>
+            <i class="pi pi-chart-bar icon"></i>
+            <h3>Izvještaji</h3>
+            <p>Generiranje i pregled izvještaja</p>
+        </p-card>
+
+    </div>
+
+</div>

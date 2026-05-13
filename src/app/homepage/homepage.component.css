@@ -1,0 +1,146 @@
+.page {
+    min-height: 100vh;
+    padding: 24px;
+    transition: 0.3s ease;
+  }
+  
+  /* LIMIT WIDTH -> FIX "RASTEZANJE" */
+  .page {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  /* HEADER */
+  .header-card {
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .header-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+  }
+  
+  /* INTRO */
+  .intro h1 {
+    margin: 0;
+  }
+  
+  .intro p {
+    color: #666;
+  }
+  
+  /* ACTIONS */
+  .actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  /* STATS */
+  .stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .stat {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .stat i {
+    font-size: 20px;
+    color: #3b82f6;
+  }
+  
+  /* MODULES */
+  .modules {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  
+  .modules p-card {
+    padding: 12px;
+    border-radius: 14px;
+  }
+  
+  .icon {
+    font-size: 22px;
+    color: #6366f1;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  /* =========================
+     RESPONSIVE
+  ========================= */
+  
+  /* tablet */
+  @media (max-width: 992px) {
+    .header-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .modules {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  /* mobile */
+  @media (max-width: 600px) {
+    .page {
+      padding: 12px;
+    }
+  
+    .modules {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* =========================
+     LIGHT / DARK THEME
+  ========================= */
+  
+  .light {
+    background: #f6f8fc;
+    color: #111;
+  }
+  
+  .dark {
+    background: #0f172a;
+    color: #e5e7eb;
+  }
+  
+  .dark .p-card {
+    background: #1e293b;
+    color: #e5e7eb;
+  }
+  
+  .dark .intro p {
+    color: #cbd5e1;
+  }
+
+  .intro-brand {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+  
+  .logo {
+    width: 156px;
+    height: 156px;
+    object-fit: contain;
+  }
