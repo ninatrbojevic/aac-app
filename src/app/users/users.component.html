@@ -4,7 +4,7 @@
     <p-button
       label="Dodaj novog korisnika"
       icon="pi pi-plus"
-      severity="success"
+      severity="secondary"
       (click)="showCreateDialog()">
     </p-button>
   </div>
@@ -19,6 +19,7 @@
         <th>Email</th>
         <th>Organizacija</th>
         <th>Uloga</th>
+        <th>Akcija</th>
       </tr>
     </ng-template>
   
@@ -57,7 +58,7 @@
     [(visible)]="visibleDialogForm"
     [style]="{ width: '28rem' }"
   >
-    <p class="text-muted mb-3">Ispunite informacije o korisniku.</p>
+    <p class="text- mb-3">Ispunite informacije o korisniku.</p>
   
     <form [formGroup]="form" (ngSubmit)="submit()" class="app-dialog-form">
   
