@@ -170,7 +170,7 @@ export class EventsComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
 
       acceptLabel: 'Obriši',
-      rejectLabel: 'Otkaži',
+      rejectLabel: 'Odustani',
 
       acceptButtonStyleClass: 'p-button-success',
       rejectButtonStyleClass: 'p-button-secondary',

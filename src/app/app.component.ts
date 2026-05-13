@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   sidebarOpen = false;
-  korisnik = { uloga: 'Student' };
+  korisnik = { uloga: 'Admin' };
   isLoginPage = false;
 
   constructor(private router: Router) {

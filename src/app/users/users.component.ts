@@ -159,12 +159,12 @@ export class UsersComponent implements OnInit {
 
   confirmDelete(user: any) {
     this.confirmationService.confirm({
-      message: `Are you sure you want to delete ${user.name} ${user.last_name}?`,
+      message: `Jeste li sigurni da želite obrisati korisnika ${user.name} ${user.last_name}?`,
       header: 'Confirm Delete',
       icon: 'pi pi-exclamation-triangle',
 
-      acceptLabel: 'Yes',
-      rejectLabel: 'Cancel',
+      acceptLabel: 'Obriši',
+      rejectLabel: 'Odustani',
 
       acceptButtonStyleClass: 'p-button-success',
       rejectButtonStyleClass: 'p-button-secondary',
