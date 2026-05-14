@@ -218,14 +218,11 @@ export class EventsComponent implements OnInit {
     });
   }
 
-  expandedEventId: string | null = null;
+  visiblePreviewDialog: boolean = false;
 
-  toggleExpand(event: any) {
-    if (this.expandedEventId === event._id) {
-      this.expandedEventId = null;
-    } else {
-      this.expandedEventId = event._id;
-    }
+  openPreviewDialog(event: any) {
+    this.selectedEvent = event;
+    this.visiblePreviewDialog = true;
   }
   private closeDialog() {
     this.visibleDialogForm = false;

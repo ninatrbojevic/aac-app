@@ -6,13 +6,13 @@
     <div class="page-header">
         <h1>Događaji i edukacije</h1>
 
-        <button pButton label="Novi događaj" class="p-button-primary" (click)="showCreateDialog()">
+        <button pButton label="Novi događaj" class="custom-btn" (click)="showCreateDialog()">
         </button>
     </div>
 
     <!-- GRID -->
     <div class="events-grid">
-        <div class="event-card" *ngFor="let event of events" [class.expanded]="expandedEventId === event._id">
+        <div class="event-card" *ngFor="let event of events">
 
             <div class="card-content">
                 <h3>{{ event.name }}</h3>
@@ -26,126 +26,125 @@
             </div>
 
             <div class="card-actions">
-                <button pButton [label]="expandedEventId === event._id ? 'Sakrij' : 'Pregled'"
-                    class="p-button-info p-button-sm" (click)="toggleExpand(event)">
+                <button pButton 
+                    label="Detalji"
+                    class="custom-btn p-button-sm"
+                    (click)="openPreviewDialog(event)">
                 </button>
 
-                <button pButton label="Uredi" class="p-button-secondary p-button-sm" (click)="openUpdateDialog(event)">
+                <button pButton 
+                    label="Uredi"
+                    class="p-button-secondary p-button-sm"
+                    (click)="openUpdateDialog(event)">
                 </button>
 
-                <button pButton label="Poništi" class="p-button-danger p-button-outlined p-button-sm"
+                <button pButton 
+                    label="Obriši"
+                    class="p-button-danger p-button-outlined p-button-sm"
                     (click)="confirmDelete(event)">
                 </button>
-            </div>
-            <div class="card-details">
-
-                <div class="detail-row">
-                    <span>📅 Datum:</span>
-                    <span>
-                        {{ event.date | date:'d. MMMM yyyy.' : '' : 'hr' }}
-                        u {{ event.date | date:'HH:mm' }}
-                    </span>
-                </div>
-
-                <div class="detail-row">
-                    <span>📍 Lokacija:</span>
-                    <span>{{ event.location || '-' }}</span>
-                </div>
-
-                <div class="detail-row">
-                    <span>⏱ Trajanje:</span>
-                    <span>{{ event.duration }} min</span>
-                </div>
-
-                <div class="detail-row">
-                    <span>👥 Kapacitet:</span>
-                    <span>{{ event.capacity }}</span>
-                </div>
-
-                <div class="detail-row">
-                    <span>🍽 Catering:</span>
-                    <span>{{ event.catering ? 'DA' : 'NE' }}</span>
-                </div>
-
-                <div class="detail-row">
-                    <span>🤝 Suradnici:</span>
-                    <span>{{ event.collaborators ? 'DA' : 'NE' }}</span>
-                </div>
-
-                <div class="detail-description">
-                    <span>📝 Opis:</span>
-                    <p>{{ event.description }}</p>
-                </div>
-
             </div>
 
         </div>
     </div>
 </div>
 
-<!-- DIALOG -->
-<p-dialog [header]="selectedEvent ? 'Uredi događaj' : 'Novi događaj'" [(visible)]="visibleDialogForm" [modal]="true"
-    [style]="{ width: '520px' }" [draggable]="false" class="event-dialog">
+<!-- PREVIEW DIALOG -->
+<p-dialog 
+    header="Detalji događaja"
+    [(visible)]="visiblePreviewDialog"
+    [modal]="true"
+    [style]="{ width: '500px' }"
+    [draggable]="false"
+    class="event-dialog">
+
+    <div *ngIf="selectedEvent" class="dialog-form">
+
+        <div class="detail-row">
+            <span>📅 Datum i vrijeme:</span>
+            <span>
+                {{ selectedEvent.date | date:'d. MMMM yyyy.' : '' : 'hr' }}
+                u {{ selectedEvent.date | date:'HH:mm' }}
+            </span>
+        </div>
+
+        <div class="detail-row">
+            <span>📍 Lokacija:</span>
+            <span>{{ selectedEvent.location || '-' }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span>⏱ Trajanje:</span>
+            <span>{{ selectedEvent.duration }} min</span>
+        </div>
+
+        <div class="detail-row">
+            <span>👥 Kapacitet:</span>
+            <span>{{ selectedEvent.capacity }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span>🍽 Catering:</span>
+            <span>{{ selectedEvent.catering ? 'DA' : 'NE' }}</span>
+        </div>
+
+        <div class="detail-row">
+            <span>🤝 Suradnici:</span>
+            <span>{{ selectedEvent.collaborators ? 'DA' : 'NE' }}</span>
+        </div>
+
+        <div class="detail-description">
+            <span>📝 Opis:</span>
+            <p>{{ selectedEvent.description }}</p>
+        </div>
+
+    </div>
+
+</p-dialog>
+
+<!-- CREATE / EDIT DIALOG (ostaje isti) -->
+<p-dialog 
+    [header]="selectedEvent ? 'Uredi događaj' : 'Novi događaj'" 
+    [(visible)]="visibleDialogForm" 
+    [modal]="true"
+    [style]="{ width: '520px' }" 
+    [draggable]="false" 
+    class="event-dialog">
+
     <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-form">
 
-        <!-- NAZIV -->
         <div class="field">
             <label>Naziv</label>
             <input pInputText formControlName="name" />
-
-            <small class="p-error" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">
-                Naziv je obavezan
-            </small>
         </div>
 
-        <!-- OPIS -->
         <div class="field">
             <label>Opis</label>
             <textarea pInputTextarea rows="3" formControlName="description"></textarea>
-
-            <small class="p-error" *ngIf="form.get('description')?.touched && form.get('description')?.invalid">
-                Opis je obavezan
-            </small>
         </div>
 
-        <!-- DATUM -->
         <div class="field">
             <label>Datum i vrijeme</label>
             <input type="datetime-local" pInputText formControlName="date" />
-
-            <small class="p-error" *ngIf="form.get('date')?.touched && form.get('date')?.invalid">
-                Datum je obavezan
-            </small>
         </div>
 
-        <!-- LOKACIJA -->
         <div class="field">
             <label>Lokacija</label>
             <input pInputText formControlName="location" />
         </div>
 
-        <!-- GRID (kapacitet + trajanje) -->
         <div class="field-row">
             <div class="field">
                 <label>Kapacitet</label>
                 <input type="number" pInputText formControlName="capacity" />
-
-                <small class="p-error" *ngIf="form.get('capacity')?.touched && form.get('capacity')?.invalid">
-                    Obavezno
-                </small>
             </div>
 
             <div class="field">
                 <label>Trajanje (min)</label>
                 <input type="number" pInputText formControlName="duration" />
-
-                <small class="p-error" *ngIf="form.get('duration')?.touched && form.get('duration')?.invalid">
-                    Obavezno
-                </small>
             </div>
         </div>
 
-        <!-- CHECKBOXI -->
         <div class="checkbox-row">
             <div class="field-checkbox">
                 <p-checkbox formControlName="catering" binary="true"></p-checkbox>
@@ -158,13 +157,14 @@
             </div>
         </div>
 
-        <!-- FOOTER -->
         <div class="dialog-footer">
-            <button pButton type="button" label="Odustani" class="p-button-secondary"
+            <button pButton type="button" label="Odustani"
+                class="p-button-secondary"
                 (click)="visibleDialogForm = false">
             </button>
 
-            <button pButton type="submit" [label]="selectedEvent ? 'Spremi' : 'Kreiraj'" icon="pi pi-check">
+            <button pButton type="submit"
+                [label]="selectedEvent ? 'Spremi' : 'Kreiraj'">
             </button>
         </div>
 
