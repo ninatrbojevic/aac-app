@@ -27,7 +27,7 @@ export class RegistrationComponent {
   onRegistracija() {
     this.greska = '';
 
-    if (!this.ime || !this.prezime || !this.email || !this.lozinka) {
+    if (!this.ime || !this.prezime || !this.uloga || !this.email || !this.lozinka) {
       this.greska = 'Molimo ispunite sva obavezna polja.';
       return;
     }

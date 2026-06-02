@@ -20,7 +20,12 @@
       </div>
 
       <div class="field">
-        <input type="text" [(ngModel)]="uloga" placeholder="Uloga" />
+        <select [(ngModel)]="uloga" name="uloga" [class.placeholder]="!uloga">
+          <option value="" disabled selected>Odaberite ulogu</option>
+          <option value="student">Student</option>
+          <option value="gost">Gost</option>
+          <option value="profesor">Profesor</option>
+        </select>
       </div>
 
       <div class="field">

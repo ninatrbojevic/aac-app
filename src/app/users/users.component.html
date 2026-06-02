@@ -84,7 +84,13 @@
   
       <div class="app-dialog-field">
         <label for="role" class="app-dialog-label">Uloga</label>
-        <input pInputText id="role" formControlName="role" class="app-dialog-control" />
+        <p-select
+          id="role"
+          formControlName="role"
+          [options]="availableRoles"
+          placeholder="Odaberite ulogu"
+          class="app-dialog-control">
+        </p-select>
       </div>
   
       <div class="app-dialog-actions">

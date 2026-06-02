@@ -5,6 +5,7 @@ import { UserService } from './users.service';
 import { Button, ButtonDirective } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -24,13 +25,23 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
     Button,
     FormsModule,
     ReactiveFormsModule,
-    ConfirmDialog
+    ConfirmDialog,
+    Select
   ],
 })
 export class UsersComponent implements OnInit {
   users: any[] = [];
 
   visibleDialogForm = false;
+
+  readonly rolesForNew = ['student', 'gost', 'profesor'];
+
+  get availableRoles(): string[] {
+    if (this.selectedUser?.role === 'admin') {
+      return ['admin', 'student', 'gost', 'profesor'];
+    }
+    return this.rolesForNew;
+  }
 
   form!: FormGroup;
 

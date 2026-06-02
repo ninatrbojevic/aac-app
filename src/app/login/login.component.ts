@@ -26,7 +26,8 @@ export class LoginComponent {
     }
 
     this.userService.login(this.email, this.lozinka).subscribe({
-      next: () => {
+      next: (user) => {
+        localStorage.setItem('currentUser', JSON.stringify(user));
         this.router.navigate(['/home']);
       },
       error: (err) => {

@@ -11,8 +11,14 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   sidebarOpen = false;
-  korisnik = { uloga: 'Admin' };
   isLoginPage = false;
+
+  get korisnikUloga(): string {
+    const raw = localStorage.getItem('currentUser');
+    if (!raw) return '';
+    const user = JSON.parse(raw);
+    return user.role ?? '';
+  }
 
   constructor(private router: Router) {
     this.router.events.subscribe(event => {
