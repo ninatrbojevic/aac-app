@@ -42,7 +42,7 @@
                     <div class="stat">
                         <i class="pi pi-file"></i>
                         <div>
-                            <b>237</b>
+                            <strong>{{ contentCount ?? '—' }}</strong>
                             <span>sadržaja</span>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
             <p>Upravljanje događanjima i edukacijama</p>
         </p-card>
 
-        <p-card>
+        <p-card class="clickable-card" (click)="goTo('/digital-content')" tabindex="0" role="button">
             <i class="pi pi-file icon"></i>
             <h3>Sadržaji</h3>
             <p>Digitalna arhiva i upravljanje dokumentima</p>
