@@ -26,4 +26,7 @@ export class UserService {
   deleteUser = (userId: string) =>
     this.http.delete(this.apiUrl + userId);
 
+  login = (email: string, password: string) =>
+    this.http.post<any>(this.apiUrl + 'login', { email, password });
+
 }

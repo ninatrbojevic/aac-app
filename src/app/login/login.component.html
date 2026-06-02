@@ -32,6 +32,9 @@
         <a class="forgot" href="#">Zaboravljena lozinka?</a>
       </div>
 
+      @if (greska) {
+        <p class="greska">{{ greska }}</p>
+      }
       <button class="btn-login" (click)="onLogin()">Prijava</button>
     </div>
 

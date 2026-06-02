@@ -64,6 +64,10 @@
     font-size: 20px;
     color: #3b82f6;
   }
+
+  .stat span {
+    margin-left: 5px;
+  }
   
   /* MODULES */
   .modules {

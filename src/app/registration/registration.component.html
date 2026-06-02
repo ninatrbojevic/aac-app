@@ -43,8 +43,13 @@
         <input type="password" [(ngModel)]="lozinkaRepeat" placeholder="Ponovni unos lozinke" />
       </div>
 
+      @if (greska) {
+        <p class="error-msg">{{ greska }}</p>
+      }
+
       <button class="btn-reg" (click)="onRegistracija()">Registracija</button>
 
     </div>
   </div>
 </div>
+
