@@ -23,4 +23,14 @@ export class AuthService {
 
     return user.role == roleToCheck;
   }
+
+  getUserId() {
+    const raw = localStorage.getItem('currentUser');
+
+    if (!raw) return false;
+
+    const user = JSON.parse(raw);
+
+    return user._id;
+  }
 }

@@ -6,7 +6,7 @@ import {HttpClient} from '@angular/common/http';
 })
 export class DigitalContentRequestService {
 
-  apiUrl = 'http://localhost:3000/api/content-requests/';
+  apiUrl = 'http://localhost:3000/api/requests/';
 
   constructor(private http: HttpClient) { }
 

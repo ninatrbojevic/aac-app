@@ -8,6 +8,7 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {ConfirmDialog} from 'primeng/confirmdialog';
 import {DigitalContentService} from './digital-content.service';
 import {Select} from 'primeng/select';
+import {Toast} from 'primeng/toast';
 import {AuthService} from '../shared/auth.service';
 import {UserRole} from '../user-role';
 import {DigitalContentRequestService} from '../digital-content-requests/digital-content-request.service';
@@ -27,6 +28,7 @@ import {DigitalContentRequestService} from '../digital-content-requests/digital-
     ReactiveFormsModule,
     ConfirmDialog,
     Select,
+    Toast,
   ],
 })
 export class DigitalContentComponent implements OnInit {
@@ -96,7 +98,8 @@ export class DigitalContentComponent implements OnInit {
       description: new FormControl('', [Validators.required]),
       title: new FormControl('', [Validators.required]),
       author: new FormControl('', [Validators.required]),
-      impairment: new FormControl('', [Validators.required])
+      impairment: new FormControl('', [Validators.required]),
+      user_id: new FormControl(this.authService.getUserId(), [Validators.required])
     });
   }
 
@@ -108,6 +111,7 @@ export class DigitalContentComponent implements OnInit {
 
   showRequestCreateDialog() {
     this.digitalContentRequestForm.reset();
+    this.digitalContentRequestForm.patchValue({ user_id: this.authService.getUserId() });
     this.visibleDigitalContentRequestDialogForm = true;
   }
 
@@ -130,7 +134,7 @@ export class DigitalContentComponent implements OnInit {
     this.visiblePreviewDialog = true;
   }
 
-  submit() {
+  submitDigitalContentForm() {
     if (this.digitalContentForm.invalid) {
       this.digitalContentForm.markAllAsTouched();
       this.messageService.add({
@@ -142,13 +146,42 @@ export class DigitalContentComponent implements OnInit {
     }
 
     if (this.selectedDigitalContentItem) {
-      this.updateItem();
+      this.updateDigitalContentItem();
     } else {
-      this.createItem();
+      this.createDigitalContentItem();
     }
   }
 
-  private createItem() {
+  submitDigitalContentRequestForm() {
+    if (this.digitalContentRequestForm.invalid) {
+      Object.entries(this.digitalContentRequestForm.controls).forEach(([name, control]) => {
+        if (control.invalid) console.log('Invalid control:', name, control.errors);
+      });
+      this.digitalContentRequestForm.markAllAsTouched();
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Nepotpuni podaci',
+        detail: 'Provjerite polja formulara.',
+      });
+      return;
+    } else {
+      this.createDigitalContentRequestItem();
+    }
+  }
+
+  private createDigitalContentRequestItem() {
+    this.digitalContentRequestService.create(this.digitalContentRequestForm.value).subscribe({
+      next: () => {
+        this.messageService.add({severity: 'success', summary: 'Uspješno', detail: 'Sadržaj kreiran.'});
+        this.closeDialog();
+      },
+      error: () => {
+        this.messageService.add({severity: 'error', summary: 'Greška', detail: 'Kreiranje nije uspjelo.'});
+      }
+    });
+  }
+
+  private createDigitalContentItem() {
     this.digitalContentService.create(this.digitalContentForm.value).subscribe({
       next: () => {
         this.messageService.add({severity: 'success', summary: 'Uspješno', detail: 'Sadržaj kreiran.'});
@@ -161,7 +194,7 @@ export class DigitalContentComponent implements OnInit {
     });
   }
 
-  private updateItem() {
+  private updateDigitalContentItem() {
     this.digitalContentService.update(this.selectedDigitalContentItem._id, this.digitalContentForm.value).subscribe({
       next: () => {
         this.messageService.add({severity: 'success', summary: 'Uspješno', detail: 'Sadržaj ažuriran.'});
@@ -214,8 +247,9 @@ export class DigitalContentComponent implements OnInit {
 
   private closeDialog() {
     this.visibleDigitalContentDialogForm = false;
+    this.visibleDigitalContentRequestDialogForm = false;
     this.selectedDigitalContentItem = null;
-    this.digitalContentForm.reset();
+    this.digitalContentForm?.reset();
     this.initForm();
   }
 
