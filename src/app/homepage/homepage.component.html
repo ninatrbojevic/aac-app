@@ -28,15 +28,17 @@
                     </div>
                 </p-card>
 
-                <p-card>
+                @if(isAdmin()) {
+                  <p-card>
                     <div class="stat">
-                        <i class="pi pi-users"></i>
-                        <div>
-                            <strong>{{ userCount ?? '—' }}</strong>
-                            <span>korisnika</span>
-                        </div>
+                      <i class="pi pi-users"></i>
+                      <div>
+                        <strong>{{ userCount ?? '—' }}</strong>
+                        <span>korisnika</span>
+                      </div>
                     </div>
-                </p-card>
+                  </p-card>
+                }
 
                 <p-card>
                     <div class="stat">
@@ -67,18 +69,20 @@
             <p>Digitalna arhiva i upravljanje dokumentima</p>
         </p-card>
 
+      @if(isAdmin()) {
         <p-card class="clickable-card" (click)="goTo('/users')" tabindex="0" role="button">
             <i class="pi pi-users icon"></i>
             <h3>Korisnici</h3>
             <p>Pregled i upravljanje korisnicima</p>
         </p-card>
-
-        <p-card>
-            <i class="pi pi-chart-bar icon"></i>
-            <h3>Izvještaji</h3>
-            <p>Generiranje i pregled izvještaja</p>
-        </p-card>
-
+      }
+        @if(isAdmin()) {
+          <p-card>
+              <i class="pi pi-chart-bar icon"></i>
+              <h3>Izvještaji</h3>
+              <p>Generiranje i pregled izvještaja</p>
+          </p-card>
+        }
     </div>
 
 </div>

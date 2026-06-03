@@ -13,7 +13,7 @@ export class AppComponent {
   sidebarOpen = false;
   isLoginPage = false;
 
-  get korisnikUloga(): string {
+  get userRole(): string {
     const raw = localStorage.getItem('currentUser');
     if (!raw) return '';
     const user = JSON.parse(raw);

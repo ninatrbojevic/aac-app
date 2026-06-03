@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { UserService } from '../users/users.service';
 import { EventService } from '../events/events.service';
 import { DigitalContentService } from '../digital-content/digital-content.service';
+import {AuthService} from '../shared/auth.service';
+import {UserRole} from '../user-role';
 
 @Component({
   selector: 'app-homepage',
@@ -21,10 +23,15 @@ export class HomepageComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private authService: AuthService,
     private userService: UserService,
     private eventService: EventService,
     private digitalContentService: DigitalContentService
   ) { }
+
+  isAdmin(): boolean {
+    return this.authService.userHasRole(UserRole.Admin);
+  }
 
   ngOnInit() {
     this.eventService.getEvents().subscribe(events => this.eventCount = events.length);

@@ -1,0 +1,208 @@
+<p-confirmDialog/>
+
+<div class="events-page">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1>Digitalizirani sadržaj</h1>
+
+    @if (isAdmin()) {
+      <button pButton label="Novi sadržaj" class="custom-btn" (click)="showDigitalContentCreateDialog()"></button>
+    } @else {
+      <button pButton label="Novi zahtjev" class="custom-btn" (click)="showRequestCreateDialog()"></button>
+    }
+
+  </div>
+
+  <!-- GRID -->
+  <div class="events-grid">
+    <div class="event-card" *ngFor="let item of digitalContentItems">
+
+      <div class="card-content">
+        <h3>{{ vrstaIcon(item.type) }} {{ item.title }}</h3>
+
+        <p class="meta">
+          {{ item.createdAt | date:'d. MMMM yyyy.' : '' : 'hr' }}
+          <span>|</span>
+          {{ item.author }}
+          <span>|</span>
+          {{ item.type }}
+        </p>
+      </div>
+
+      <div class="card-actions">
+        <button pButton
+                label="Detalji"
+                class="custom-btn p-button-sm"
+                (click)="openPreviewDialog(item)">
+        </button>
+
+        @if (isAdmin()) {
+          <button pButton
+                  label="Uredi"
+                  class="p-button-secondary p-button-sm"
+                  (click)="openDigitalContentUpdateDialog(item)">
+          </button>
+        }
+
+        @if (isAdmin()) {
+          <button pButton
+                  label="Obriši"
+                  class="p-button-danger p-button-outlined p-button-sm"
+                  (click)="confirmDelete(item)">
+          </button>
+        }
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW DIALOG -->
+<p-dialog
+  header="Detalji sadržaja"
+  [(visible)]="visiblePreviewDialog"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  [draggable]="false"
+  class="event-dialog">
+
+  <div *ngIf="selectedDigitalContentItem" class="dialog-form">
+
+    <div class="detail-row">
+      <span>📁 Vrsta:</span>
+      <span>{{ vrstaIcon(selectedDigitalContentItem.type) }} {{ selectedDigitalContentItem.type }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span>👤 Autor:</span>
+      <span>{{ selectedDigitalContentItem.author || '-' }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span>✅ Status:</span>
+      <span>{{ selectedDigitalContentItem.status }}</span>
+    </div>
+  </div>
+
+</p-dialog>
+
+<!-- CREATE / EDIT DIALOG -- DIGITAL REQUEST -->
+@if(!isAdmin()){
+  <p-dialog
+    [header]="'Novi zahtjev'"
+    [(visible)]="visibleDigitalContentRequestDialogForm"
+    [modal]="true"
+    [style]="{ width: '520px' }"
+    [draggable]="false"
+    class="event-dialog">
+
+    <form [formGroup]="digitalContentRequestForm" (ngSubmit)="submit()" class="dialog-form">
+
+      <div class="field">
+        <label>Naslov</label>
+        <input pInputText formControlName="title"/>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Autor</label>
+          <input pInputText formControlName="author"/>
+        </div>
+
+        <div class="field">
+          <label>Invaliditet</label>
+          <input pInputText formControlName="impairment"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Opis</label>
+        <textarea pInputText formControlName="description"></textarea>
+      </div>
+
+      <div class="dialog-footer">
+        <button pButton type="button" label="Odustani"
+                class="p-button-secondary"
+                (click)="visibleDigitalContentRequestDialogForm = false">
+        </button>
+
+        <button pButton type="submit"
+                [label]="'Kreiraj'">
+        </button>
+      </div>
+    </form>
+  </p-dialog>
+}
+
+<!-- CREATE / EDIT DIALOG -- DIGITAL CONTENT -->
+@if(isAdmin()){
+  <p-dialog
+    [header]="selectedDigitalContentItem ? 'Uredi sadržaj' : 'Novi sadržaj'"
+    [(visible)]="visibleDigitalContentDialogForm"
+    [modal]="true"
+    [style]="{ width: '520px' }"
+    [draggable]="false"
+    class="event-dialog">
+
+    <form [formGroup]="digitalContentForm" (ngSubmit)="submit()" class="dialog-form">
+
+      <div class="field">
+        <label>Naslov</label>
+        <input pInputText formControlName="title"/>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label>Vrsta</label>
+          <p-select
+            formControlName="type"
+            [options]="vrsteOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Odaberi vrstu">
+          </p-select>
+        </div>
+
+        <div class="field">
+          <label>Status</label>
+          <p-select
+            formControlName="status"
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Odaberi status">
+          </p-select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Autor</label>
+        <input pInputText formControlName="author"/>
+      </div>
+
+      <div class="field">
+        <label>Request ID</label>
+        <input pInputText formControlName="request_id"/>
+      </div>
+
+      <div class="field">
+        <label>URL (opcionalno)</label>
+        <input pInputText formControlName="url"/>
+      </div>
+
+      <div class="dialog-footer">
+        <button pButton type="button" label="Odustani"
+                class="p-button-secondary"
+                (click)="visibleDigitalContentDialogForm = false">
+        </button>
+
+        <button pButton type="submit"
+                [label]="selectedDigitalContentItem ? 'Spremi' : 'Kreiraj'">
+        </button>
+      </div>
+
+    </form>
+  </p-dialog>
+}
+

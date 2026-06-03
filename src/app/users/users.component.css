@@ -57,12 +57,13 @@ td .p-button {
 /* DIALOG */
 ::ng-deep .p-dialog {
     border-radius: 16px;
-    overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     background: #ffffff !important;
 }
 
 ::ng-deep .p-dialog .p-dialog-header {
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
     background: #f8fafc !important;
     border-bottom: 1px solid #e5e7eb !important;
     padding: 1.25rem 1.5rem;
@@ -104,7 +105,6 @@ td .p-button {
     width: 100%;
     border-radius: 8px;
     border: 1px solid #d1d5db;
-    padding: 0.5rem 0.75rem;
     font-size: 14px;
     background: #ffffff !important;
     color: #374151 !important;
@@ -115,6 +115,20 @@ td .p-button {
     outline: none;
     border-color: #6366f1;
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+::ng-deep .app-dialog-select .p-select {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    background: #ffffff !important;
+}
+
+::ng-deep .app-dialog-select .p-select .p-select-label {
+    padding: 0.5rem 0.75rem;
+    font-size: 14px;
+    color: #374151;
 }
 
 /* DIALOG ACTIONS */

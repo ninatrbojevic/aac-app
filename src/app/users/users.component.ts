@@ -34,11 +34,11 @@ export class UsersComponent implements OnInit {
 
   visibleDialogForm = false;
 
-  readonly rolesForNew = ['student', 'gost', 'profesor'];
+  readonly rolesForNew = ['Student', 'Gost', 'Profesor'];
 
   get availableRoles(): string[] {
-    if (this.selectedUser?.role === 'admin') {
-      return ['admin', 'student', 'gost', 'profesor'];
+    if (this.selectedUser?.role === 'Admin') {
+      return ['Admin', 'Student', 'Gost', 'Profesor'];
     }
     return this.rolesForNew;
   }
