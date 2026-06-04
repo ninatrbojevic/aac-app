@@ -5,9 +5,9 @@
     <!-- HEADER -->
     <div class="page-header">
         <h1>Događaji i edukacije</h1>
-
+        @if(isAdmin()){
         <button pButton label="Novi događaj" class="custom-btn" (click)="showCreateDialog()">
-        </button>
+        </button>}
     </div>
 
     <!-- GRID -->
@@ -26,23 +26,35 @@
             </div>
 
             <div class="card-actions">
-                <button pButton 
-                    label="Detalji"
-                    class="custom-btn p-button-sm"
-                    (click)="openPreviewDialog(event)">
+                <button pButton label="Detalji" class="custom-btn p-button-sm" (click)="openPreviewDialog(event)">
                 </button>
-
-                <button pButton 
-                    label="Uredi"
-                    class="p-button-secondary p-button-sm"
-                    (click)="openUpdateDialog(event)">
-                </button>
-
-                <button pButton 
-                    label="Obriši"
-                    class="p-button-danger p-button-outlined p-button-sm"
+                @if(isAdmin()){
+                <button pButton label="Uredi" class="p-button-secondary p-button-sm" (click)="openUpdateDialog(event)">
+                </button>}
+                @if(isAdmin()){
+                <button pButton label="Obriši" class="p-button-danger p-button-outlined p-button-sm"
                     (click)="confirmDelete(event)">
-                </button>
+                </button>}
+                <!-- @if(!isAdmin()){
+                    <button
+                      pButton
+                      class="custom-btn p-button-sm"
+                      (click)="event.isJoined = !event.isJoined"
+                      [label]="event.isJoined ? 'Odjavi se' : 'Prijavi se'">
+                    </button>
+                  } -->
+                  @if(!isAdmin()){
+                    <button pButton class="custom-btn p-button-sm"
+                      (click)="toggleRegistration(event)"
+                      [label]="event.isRegistered ? 'Odjavi se' : 'Prijavi se'">
+                    </button>
+                  }
+                  @if(isAdmin()){
+                    <button pButton label="Prijavljeni"
+                      class="p-button-secondary p-button-sm"
+                      (click)="openRegisteredDialog(event)">
+                    </button>
+                  }
             </div>
 
         </div>
@@ -50,13 +62,8 @@
 </div>
 
 <!-- PREVIEW DIALOG -->
-<p-dialog 
-    header="Detalji događaja"
-    [(visible)]="visiblePreviewDialog"
-    [modal]="true"
-    [style]="{ width: '500px' }"
-    [draggable]="false"
-    class="event-dialog">
+<p-dialog header="Detalji događaja" [(visible)]="visiblePreviewDialog" [modal]="true" [style]="{ width: '500px' }"
+    [draggable]="false" class="event-dialog">
 
     <div *ngIf="selectedEvent" class="dialog-form">
 
@@ -103,13 +110,8 @@
 </p-dialog>
 
 <!-- CREATE / EDIT DIALOG (ostaje isti) -->
-<p-dialog 
-    [header]="selectedEvent ? 'Uredi događaj' : 'Novi događaj'" 
-    [(visible)]="visibleDialogForm" 
-    [modal]="true"
-    [style]="{ width: '520px' }" 
-    [draggable]="false" 
-    class="event-dialog">
+<p-dialog [header]="selectedEvent ? 'Uredi događaj' : 'Novi događaj'" [(visible)]="visibleDialogForm" [modal]="true"
+    [style]="{ width: '520px' }" [draggable]="false" class="event-dialog">
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-form">
 
@@ -158,15 +160,61 @@
         </div>
 
         <div class="dialog-footer">
-            <button pButton type="button" label="Odustani"
-                class="p-button-secondary"
+            <button pButton type="button" label="Odustani" class="p-button-secondary"
                 (click)="visibleDialogForm = false">
             </button>
 
-            <button pButton type="submit"
-                [label]="selectedEvent ? 'Spremi' : 'Kreiraj'">
+            <button pButton type="submit" [label]="selectedEvent ? 'Spremi' : 'Kreiraj'">
             </button>
         </div>
 
     </form>
 </p-dialog>
+
+
+<!-- PRIJAVLJENI DIALOG -->
+<p-dialog
+  header="Prijavljeni korisnici"
+  [(visible)]="visibleRegisteredDialog"
+  [modal]="true"
+  [style]="{ width: '480px' }"
+  [draggable]="false"
+  class="event-dialog">
+
+  <div class="dialog-form">
+
+    <p *ngIf="selectedEvent" style="margin-bottom: 1rem;">
+      Događaj: <strong>{{ selectedEvent?.name }}</strong>
+    </p>
+
+    <p *ngIf="getRegisteredUsers().length === 0" style="color: var(--text-color-secondary);">
+      Nema prijavljenih korisnika.
+    </p>
+
+    <ul *ngIf="getRegisteredUsers().length > 0" style="list-style: none; padding: 0; margin: 0;">
+      <li
+        *ngFor="let user of getRegisteredUsers()"
+        style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--surface-border);">
+        <span>{{ user.name }} {{ user.last_name }}</span>
+        <button
+          pButton
+          label="Ukloni"
+          class="p-button-danger p-button-outlined p-button-sm"
+          (click)="removeUserFromEvent(user)">
+        </button>
+      </li>
+    </ul>
+
+  </div>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      label="Ovjeri"
+      icon="pi pi-check"
+      class="custom-btn">
+    </button>
+  </ng-template>
+
+</p-dialog>
+<p-toast />

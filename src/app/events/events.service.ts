@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import { CurrentUser } from '../shared/auth.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -25,5 +27,11 @@ export class EventService {
 
   deleteEvent = (eventId: string) =>
     this.http.delete(this.apiUrl + eventId);
+
+  registerForEvent = (eventId: string, user: CurrentUser) =>
+  this.http.post(`${this.apiUrl}${eventId}/register`, user);
+
+  unregisterFromEvent = (eventId: string, userId: string) =>
+  this.http.delete(`${this.apiUrl}${eventId}/register/${userId}`);
 
 }

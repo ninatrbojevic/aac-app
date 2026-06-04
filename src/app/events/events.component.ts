@@ -9,7 +9,9 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Checkbox } from 'primeng/checkbox';
-
+import { AuthService, CurrentUser } from '../shared/auth.service';
+import { UserRole } from '../user-role';
+import { Toast } from 'primeng/toast';
 
 @Component({
   selector: 'app-events',
@@ -26,32 +28,38 @@ import { Checkbox } from 'primeng/checkbox';
     FormsModule,
     ReactiveFormsModule,
     ConfirmDialog,
-    Checkbox
+    Checkbox,
+    Toast
   ],
 })
 export class EventsComponent implements OnInit {
   events: any[] = [];
 
   visibleDialogForm = false;
+  visiblePreviewDialog = false;
+  visibleRegisteredDialog = false;
 
   form!: FormGroup;
 
   selectedEvent: any | null = null;
 
+  currentUser: CurrentUser | null = null;
+
   constructor(
     private eventService: EventService,
+    private authService: AuthService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) {
     this.initForm();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.currentUser = this.authService.getCurrentUser();
     this.loadEvents();
   }
 
-
-  private initForm() {
+  private initForm(): void {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required]),
       description: new FormControl('', [Validators.required]),
@@ -64,16 +72,35 @@ export class EventsComponent implements OnInit {
     });
   }
 
+  private loadEvents(): void {
+    this.eventService.getEvents().subscribe({
+      next: data => {
+        this.events = (data || []).map(event => ({
+          ...event,
+          isRegistered: this.currentUser
+            ? event.registeredUsers?.some((u: CurrentUser) => u._id === this.currentUser!._id) ?? false
+            : false
+        }));
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load events.',
+        });
+      }
+    });
+  }
 
-  showCreateDialog() {
+  showCreateDialog(): void {
     this.selectedEvent = null;
     this.form.reset();
     this.visibleDialogForm = true;
   }
-  openUpdateDialog(event: any) {
+
+  openUpdateDialog(event: any): void {
     this.selectedEvent = event;
     this.form.reset();
-
     this.form.patchValue({
       name: event.name,
       description: event.description,
@@ -84,20 +111,27 @@ export class EventsComponent implements OnInit {
       collaborators: event.collaborators,
       duration: event.duration
     });
-
     this.visibleDialogForm = true;
   }
 
-  submit() {
+  openPreviewDialog(event: any): void {
+    this.selectedEvent = event;
+    this.visiblePreviewDialog = true;
+  }
+
+  openRegisteredDialog(event: any): void {
+    this.selectedEvent = event;
+    this.visibleRegisteredDialog = true;
+  }
+
+  submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-
       this.messageService.add({
         severity: 'warn',
         summary: 'Incomplete data',
         detail: 'Please check form fields.',
       });
-
       return;
     }
 
@@ -108,9 +142,8 @@ export class EventsComponent implements OnInit {
     }
   }
 
-  private createEvent() {
+  private createEvent(): void {
     const payload = this.form.value;
-
     this.eventService.createEvent(payload).subscribe({
       next: () => {
         this.messageService.add({
@@ -118,13 +151,11 @@ export class EventsComponent implements OnInit {
           summary: 'Success',
           detail: 'Event created successfully.',
         });
-
         this.closeDialog();
         this.loadEvents();
       },
       error: (err) => {
-        console.log('CREATE ERROR:', err);
-
+        console.error('CREATE ERROR:', err);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -134,12 +165,9 @@ export class EventsComponent implements OnInit {
     });
   }
 
-
-  private updateEvent() {
+  private updateEvent(): void {
     if (!this.selectedEvent) return;
-
     const payload = this.form.value;
-
     this.eventService.updateEvent(this.selectedEvent._id, payload).subscribe({
       next: () => {
         this.messageService.add({
@@ -147,13 +175,11 @@ export class EventsComponent implements OnInit {
           summary: 'Success',
           detail: 'Event updated successfully.',
         });
-
         this.closeDialog();
         this.loadEvents();
       },
       error: (err) => {
-        console.log('UPDATE ERROR:', err);
-
+        console.error('UPDATE ERROR:', err);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -163,25 +189,22 @@ export class EventsComponent implements OnInit {
     });
   }
 
-  confirmDelete(event: any) {
+  confirmDelete(event: any): void {
     this.confirmationService.confirm({
       message: `Jeste li sigurni da želite obrisati događaj: ${event.name}?`,
       header: 'Potvrdi',
       icon: 'pi pi-exclamation-triangle',
-
       acceptLabel: 'Obriši',
       rejectLabel: 'Odustani',
-
       acceptButtonStyleClass: 'p-button-success',
       rejectButtonStyleClass: 'p-button-secondary',
-
       accept: () => {
         this.deleteEvent(event._id);
       }
     });
   }
 
-  private deleteEvent(id: string) {
+  private deleteEvent(id: string): void {
     this.eventService.deleteEvent(id).subscribe({
       next: () => {
         this.messageService.add({
@@ -189,7 +212,6 @@ export class EventsComponent implements OnInit {
           summary: 'Success',
           detail: 'Event deleted successfully.',
         });
-
         this.loadEvents();
       },
       error: () => {
@@ -202,32 +224,126 @@ export class EventsComponent implements OnInit {
     });
   }
 
+  // private loadEvents(): void {
+  //   this.eventService.getEvents().subscribe({
+  //     next: data => {
+  //       this.events = data || [];
+  //     },
+  //     error: () => {
+  //       this.messageService.add({
+  //         severity: 'error',
+  //         summary: 'Error',
+  //         detail: 'Failed to load events.',
+  //       });
+  //     }
+  //   });
+  // }
 
-  private loadEvents() {
-    this.eventService.getEvents().subscribe({
-      next: data => {
-        this.events = data || [];
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to load events.',
-        });
-      }
-    });
-  }
-
-  visiblePreviewDialog: boolean = false;
-
-  openPreviewDialog(event: any) {
-    this.selectedEvent = event;
-    this.visiblePreviewDialog = true;
-  }
-  private closeDialog() {
+  private closeDialog(): void {
     this.visibleDialogForm = false;
     this.selectedEvent = null;
     this.form.reset();
     this.initForm();
+  }
+
+  isAdmin(): boolean {
+    return this.authService.userHasRole(UserRole.Admin);
+  }
+
+  toggleRegistration(event: any): void {
+    if (!this.currentUser) return;
+  
+    if (event.isRegistered) {
+      this.confirmationService.confirm({
+        message: `Jeste li sigurni da se želite odjaviti s događaja "${event.name}"?`,
+        header: 'Potvrdi odjavu',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Odjavi se',
+        rejectLabel: 'Odustani',
+        acceptButtonStyleClass: 'p-button-danger',
+        rejectButtonStyleClass: 'p-button-secondary',
+        accept: () => {
+          this.eventService.unregisterFromEvent(event._id, this.currentUser!._id).subscribe({
+            next: () => {
+              event.isRegistered = false;
+              event.registeredUsers = event.registeredUsers.filter(
+                (u: CurrentUser) => u._id !== this.currentUser!._id
+              );
+              this.messageService.add({
+                severity: 'info',
+                summary: 'Odjava uspješna',
+                detail: `Uspješno ste se odjavili s događaja "${event.name}".`,
+              });
+            },
+            error: () => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Failed to unregister from event.',
+              });
+            }
+          });
+        }
+      });
+    } else {
+      this.eventService.registerForEvent(event._id, this.currentUser).subscribe({
+        next: (updatedEvent: any) => {
+          event.isRegistered = true;
+          event.registeredUsers = updatedEvent.registeredUsers;
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Prijava uspješna',
+            detail: `Uspješno ste se prijavili na događaj "${event.name}".`,
+          });
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to register for event.',
+          });
+        }
+      });
+    }
+  }
+
+  getRegisteredUsers(): CurrentUser[] {
+    if (!this.selectedEvent) return [];
+    return this.selectedEvent.registeredUsers ?? [];
+  }
+
+  removeUserFromEvent(user: CurrentUser): void {
+    if (!this.selectedEvent) return;
+  
+    this.confirmationService.confirm({
+      message: `Jeste li sigurni da želite ukloniti ${user.name} ${user.last_name} s događaja?`,
+      header: 'Potvrdi uklanjanje',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Ukloni',
+      rejectLabel: 'Odustani',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-secondary',
+      accept: () => {
+        this.eventService.unregisterFromEvent(this.selectedEvent._id, user._id).subscribe({
+          next: () => {
+            this.selectedEvent.registeredUsers = this.selectedEvent.registeredUsers.filter(
+              (u: CurrentUser) => u._id !== user._id
+            );
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Uspješno',
+              detail: `${user.name} ${user.last_name} je uklonjen/a s događaja.`,
+            });
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Failed to remove user from event.',
+            });
+          }
+        });
+      }
+    });
   }
 }

@@ -1,6 +1,21 @@
 import { Injectable } from '@angular/core';
 import {UserRole} from '../user-role';
 
+
+export interface CurrentUser {
+  _id: string;
+  name: string;
+  last_name: string;
+  email: string;
+  role: UserRole;
+  [key: string]: any;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -40,5 +55,11 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem('currentUser');
+  }
+
+  getCurrentUser(): CurrentUser | null {
+    const raw = localStorage.getItem('currentUser');
+    if (!raw) return null;
+    return JSON.parse(raw) as CurrentUser;
   }
 }
