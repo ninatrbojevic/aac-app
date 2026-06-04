@@ -1,42 +1,47 @@
 @if (!isLoginPage) {
-  <div class="toolbar">
-    <div class="toolbar-left">
-      <button class="hamburger" (click)="toggleSidebar()">
-        <i class="pi pi-bars"></i>
-      </button>
-      <span class="app-title"><a href="home/">AAC Sustav</a></span>
-    </div>
-    <div class="user-info" (click)="toggleUserMenu()">
-      <i class="pi pi-user"></i>
-      <span>{{ userRole }}</span>
-    
-      <div class="user-dropdown" *ngIf="userMenuOpen">
-        <button (click)="logout($event)">
-          Odjava
-        </button>
-      </div>
-    </div>
+<div class="toolbar">
+  <div class="toolbar-left">
+    <button class="hamburger" (click)="toggleSidebar()">
+      <i class="pi pi-bars"></i>
+    </button>
+    <span class="app-title"><a href="home/">AAC Sustav</a></span>
   </div>
+  <div class="user-info" (click)="toggleUserMenu()">
+    <i class="pi pi-user"></i>
+    <span>{{ userRole }}</span>
 
-  <div class="overlay" [class.open]="sidebarOpen" (click)="toggleSidebar()"></div>
-
-  <div class="drawer" [class.open]="sidebarOpen">
-    <div class="drawer-header">
-      <span class="drawer-title">Izbornik</span>
-      <button class="close-btn" (click)="toggleSidebar()">
-        <i class="pi pi-times"></i>
+    <div class="user-dropdown" *ngIf="userMenuOpen">
+      <button (click)="logout($event)">
+        Odjava
       </button>
     </div>
-    <nav class="nav-links">
-      <a href="home/"><i class="pi pi-home"></i><span>Početna</span></a>
-      <a href="users/"><i class="pi pi-user"></i><span>Pregled korisnika</span></a>
-      <a href="events/"><i class="pi pi-calendar"></i><span>Pregled događaja</span></a>
-      <!-- <a href="#"><i class="pi pi-list"></i><span>Moje prijave</span></a> -->
-      <a href="digital-content/"><i class="pi pi-file"></i><span>Digitalizirani sadržaj</span></a>
-      <a href="#"><i class="pi pi-check-circle"></i><span>Potvrde</span></a>
-      <!-- <a href="#"><i class="pi pi-cog"></i><span>Postavke</span></a> -->
-    </nav>
   </div>
+</div>
+
+<div class="overlay" [class.open]="sidebarOpen" (click)="toggleSidebar()"></div>
+
+<div class="drawer" [class.open]="sidebarOpen">
+  <div class="drawer-header">
+    <span class="drawer-title">Izbornik</span>
+    <button class="close-btn" (click)="toggleSidebar()">
+      <i class="pi pi-times"></i>
+    </button>
+  </div>
+  <nav class="nav-links">
+    <a href="home/"><i class="pi pi-home"></i><span>Početna</span></a>
+    @if(isAdmin()) { <a href="users/"><i class="pi pi-user"></i><span>Pregled korisnika</span></a>}
+    <a href="events/"><i class="pi pi-calendar"></i><span>Pregled događaja</span></a>
+    <!-- <a href="#"><i class="pi pi-list"></i><span>Moje prijave</span></a> -->
+    <a href="digital-content/"><i class="pi pi-file"></i><span>Digitalizirani sadržaj</span></a>
+    @if(!isAdmin()) {
+      <a href="home/"><i class="pi pi-file"></i><span>Moji zahtjevi</span></a>
+    }@if(isAdmin()) {
+      <a href="home/"><i class="pi pi-file"></i><span>Pregled zahtjeva</span></a>
+    }
+    <!-- <a href="#"><i class="pi pi-check-circle"></i><span>Potvrde</span></a> -->
+    <!-- <a href="#"><i class="pi pi-cog"></i><span>Postavke</span></a> -->
+  </nav>
+</div>
 }
 
 <main class="content">

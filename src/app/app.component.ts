@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './shared/auth.service';
+import { UserRole } from './user-role';
 
 @Component({
   selector: 'app-root',
@@ -51,5 +52,9 @@ export class AppComponent {
     this.userMenuOpen = false;
   
     this.router.navigate(['/login']);
+  }
+
+  isAdmin(): boolean {
+    return this.authService.userHasRole(UserRole.Admin);
   }
 }
