@@ -12,6 +12,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { AuthService, CurrentUser } from '../shared/auth.service';
 import { UserRole } from '../user-role';
 import { Toast } from 'primeng/toast';
+import { UserService } from '../users/users.service';
 
 @Component({
   selector: 'app-events',
@@ -44,12 +45,17 @@ export class EventsComponent implements OnInit {
   selectedEvent: any | null = null;
 
   currentUser: CurrentUser | null = null;
+  allUsers: CurrentUser[] = [];
+  filteredUsers: CurrentUser[] = [];
+  userSearchQuery: string = '';
+  selectedUserToAdd: CurrentUser | null = null;
 
   constructor(
     private eventService: EventService,
     private authService: AuthService,
     private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private userService: UserService
   ) {
     this.initForm();
   }
@@ -121,6 +127,10 @@ export class EventsComponent implements OnInit {
 
   openRegisteredDialog(event: any): void {
     this.selectedEvent = event;
+    this.userSearchQuery = '';
+    this.selectedUserToAdd = null;
+    this.filteredUsers = [];
+    this.loadAllUsers();          
     this.visibleRegisteredDialog = true;
   }
 
@@ -252,7 +262,7 @@ export class EventsComponent implements OnInit {
 
   toggleRegistration(event: any): void {
     if (!this.currentUser) return;
-  
+
     if (event.isRegistered) {
       this.confirmationService.confirm({
         message: `Jeste li sigurni da se želite odjaviti s događaja "${event.name}"?`,
@@ -314,7 +324,7 @@ export class EventsComponent implements OnInit {
 
   removeUserFromEvent(user: CurrentUser): void {
     if (!this.selectedEvent) return;
-  
+
     this.confirmationService.confirm({
       message: `Jeste li sigurni da želite ukloniti ${user.name} ${user.last_name} s događaja?`,
       header: 'Potvrdi uklanjanje',
@@ -342,6 +352,55 @@ export class EventsComponent implements OnInit {
               detail: 'Failed to remove user from event.',
             });
           }
+        });
+      }
+    });
+  }
+  loadAllUsers(): void {
+    this.userService.getUsers().subscribe({
+      next: data => this.allUsers = data || [],
+      error: () => { }
+    });
+  }
+  searchUsers(): void {
+    const q = this.userSearchQuery.toLowerCase().trim();
+    if (!q) {
+      this.filteredUsers = [];
+      return;
+    }
+    const alreadyRegistered = this.selectedEvent?.registeredUsers?.map((u: CurrentUser) => u._id) ?? [];
+    this.filteredUsers = this.allUsers.filter(u =>
+      !alreadyRegistered.includes(u._id) &&
+      (`${u.name} ${u.last_name}`).toLowerCase().includes(q)
+    );
+  }
+
+  selectUserToAdd(user: CurrentUser): void {
+    this.selectedUserToAdd = user;
+    this.userSearchQuery = `${user.name} ${user.last_name}`;
+    this.filteredUsers = [];
+  }
+
+  addUserToEvent(): void {
+    if (!this.selectedEvent || !this.selectedUserToAdd) return;
+
+    this.eventService.registerForEvent(this.selectedEvent._id, this.selectedUserToAdd).subscribe({
+      next: (updatedEvent: any) => {
+        this.selectedEvent.registeredUsers = updatedEvent.registeredUsers;
+        this.selectedUserToAdd = null;
+        this.userSearchQuery = '';
+        this.filteredUsers = [];
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Uspješno',
+          detail: 'Korisnik je dodan na događaj.',
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Greška',
+          detail: 'Nije moguće dodati korisnika.',
         });
       }
     });

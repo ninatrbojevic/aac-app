@@ -187,6 +187,46 @@
       Događaj: <strong>{{ selectedEvent?.name }}</strong>
     </p>
 
+    <!-- DODAJ KORISNIKA -->
+    <div style="position: relative; margin-bottom: 1.5rem;">
+      <label style="display:block; margin-bottom: 0.4rem; font-weight: 500;">Dodaj korisnika</label>
+      <div style="display: flex; gap: 0.5rem;">
+        <div style="flex: 1; position: relative;">
+          <input
+            pInputText
+            [(ngModel)]="userSearchQuery"
+            (ngModelChange)="searchUsers()"
+            placeholder="Pretraži po imenu..."
+            style="width: 100%;" />
+
+          <!-- dropdown rezultati -->
+          <ul *ngIf="filteredUsers.length > 0"
+            style="position: absolute; z-index: 1100; background: white;
+       border: 1px solid #dee2e6; border-radius: 6px;
+       list-style: none; margin: 0; padding: 4px 0; width: 100%;
+       box-shadow: 0 4px 12px rgba(0,0,0,0.15); top: 100%; left: 0;">
+            <li *ngFor="let user of filteredUsers"
+              (click)="selectUserToAdd(user)"
+              style="padding: 8px 12px; cursor: pointer;"
+              onmouseover="this.style.background='var(--surface-hover)'"
+              onmouseout="this.style.background='transparent'">
+              {{ user.name }} {{ user.last_name }}
+            </li>
+          </ul>
+        </div>
+
+        <button
+          pButton
+          label="Dodaj"
+          icon="pi pi-plus"
+          class="custom-btn"
+          [disabled]="!selectedUserToAdd"
+          (click)="addUserToEvent()">
+        </button>
+      </div>
+    </div>
+
+    <!-- LISTA PRIJAVLJENIH -->
     <p *ngIf="getRegisteredUsers().length === 0" style="color: var(--text-color-secondary);">
       Nema prijavljenih korisnika.
     </p>
@@ -194,7 +234,8 @@
     <ul *ngIf="getRegisteredUsers().length > 0" style="list-style: none; padding: 0; margin: 0;">
       <li
         *ngFor="let user of getRegisteredUsers()"
-        style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--surface-border);">
+        style="display: flex; justify-content: space-between; align-items: center;
+               padding: 8px 0; border-bottom: 1px solid var(--surface-border);">
         <span>{{ user.name }} {{ user.last_name }}</span>
         <button
           pButton
@@ -208,12 +249,7 @@
   </div>
 
   <ng-template pTemplate="footer">
-    <button
-      pButton
-      label="Ovjeri"
-      icon="pi pi-check"
-      class="custom-btn">
-    </button>
+    <button pButton label="Zatvori" class="p-button-secondary" (click)="visibleRegisteredDialog = false"></button>
   </ng-template>
 
 </p-dialog>
