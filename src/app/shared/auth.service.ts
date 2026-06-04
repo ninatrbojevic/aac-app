@@ -33,4 +33,12 @@ export class AuthService {
 
     return user._id;
   }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('currentUser');
+  }
+
+  logout(): void {
+    localStorage.removeItem('currentUser');
+  }
 }
