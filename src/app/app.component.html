@@ -6,9 +6,15 @@
       </button>
       <span class="app-title"><a href="home/">AAC Sustav</a></span>
     </div>
-    <div class="user-info">
+    <div class="user-info" (click)="toggleUserMenu()">
       <i class="pi pi-user"></i>
       <span>{{ userRole }}</span>
+    
+      <div class="user-dropdown" *ngIf="userMenuOpen">
+        <button (click)="logout($event)">
+          Odjava
+        </button>
+      </div>
     </div>
   </div>
 
