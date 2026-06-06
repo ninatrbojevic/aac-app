@@ -3,6 +3,8 @@ import {CommonModule} from '@angular/common';
 import {ButtonDirective} from 'primeng/button';
 import {Dialog} from 'primeng/dialog';
 import {InputText} from 'primeng/inputtext';
+import {IconField} from 'primeng/iconfield';
+import {InputIcon} from 'primeng/inputicon';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {ConfirmDialog} from 'primeng/confirmdialog';
@@ -29,10 +31,22 @@ import {DigitalContentRequestService} from '../digital-content-requests/digital-
     ConfirmDialog,
     Select,
     Toast,
+    IconField,
+    InputIcon,
   ],
 })
 export class DigitalContentComponent implements OnInit {
   digitalContentItems: any[] = [];
+  contentSearchQuery = '';
+
+  get filteredDigitalContentItems(): any[] {
+    const q = this.contentSearchQuery.toLowerCase().trim();
+    if (!q) return this.digitalContentItems;
+    return this.digitalContentItems.filter(i =>
+      i.title?.toLowerCase().includes(q) ||
+      i.author?.toLowerCase().includes(q)
+    );
+  }
 
   visibleDigitalContentDialogForm = false;
 

@@ -10,9 +10,17 @@
         </button>}
     </div>
 
+    <!-- SEARCH -->
+    <div class="search-bar">
+        <p-iconfield>
+            <p-inputicon styleClass="pi pi-search" />
+            <input pInputText [(ngModel)]="eventSearchQuery" placeholder="Pretraži po nazivu..." />
+        </p-iconfield>
+    </div>
+
     <!-- GRID -->
     <div class="events-grid">
-        <div class="event-card" *ngFor="let event of events">
+        <div class="event-card" *ngFor="let event of filteredEvents">
 
             <div class="card-content">
                 <h3>{{ event.name }}</h3>

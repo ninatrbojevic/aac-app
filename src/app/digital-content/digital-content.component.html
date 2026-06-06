@@ -15,9 +15,17 @@
 
   </div>
 
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <p-iconfield>
+      <p-inputicon styleClass="pi pi-search" />
+      <input pInputText [(ngModel)]="contentSearchQuery" placeholder="Pretraži po nazivu ili autoru..." />
+    </p-iconfield>
+  </div>
+
   <!-- GRID -->
   <div class="events-grid">
-    <div class="event-card" *ngFor="let item of digitalContentItems">
+    <div class="event-card" *ngFor="let item of filteredDigitalContentItems">
 
       <div class="card-content">
         <h3>{{ vrstaIcon(item.type) }} {{ item.title }}</h3>

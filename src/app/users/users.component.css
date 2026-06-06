@@ -11,6 +11,15 @@
     color: #1e293b;
 }
 
+/* SEARCH */
+.search-bar {
+    margin-bottom: 1.5rem;
+}
+
+.search-bar input {
+    width: 430px;
+}
+
 /* TABLE */
 ::ng-deep .p-datatable .p-datatable-thead > tr > th {
     background: #f8fafc !important;

@@ -5,6 +5,8 @@ import { EventService } from './events.service';
 import { ButtonDirective } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
@@ -26,6 +28,8 @@ import { UserService } from '../users/users.service';
     ButtonDirective,
     Dialog,
     InputText,
+    IconField,
+    InputIcon,
     FormsModule,
     ReactiveFormsModule,
     ConfirmDialog,
@@ -35,6 +39,13 @@ import { UserService } from '../users/users.service';
 })
 export class EventsComponent implements OnInit {
   events: any[] = [];
+  eventSearchQuery = '';
+
+  get filteredEvents(): any[] {
+    const q = this.eventSearchQuery.toLowerCase().trim();
+    if (!q) return this.events;
+    return this.events.filter(e => e.name?.toLowerCase().includes(q));
+  }
 
   visibleDialogForm = false;
   visiblePreviewDialog = false;

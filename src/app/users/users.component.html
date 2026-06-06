@@ -10,8 +10,16 @@
   </div>
   
   <p-confirmDialog></p-confirmDialog>
-  
-  <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }">
+
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <p-iconfield>
+      <p-inputicon styleClass="pi pi-search" />
+      <input pInputText [(ngModel)]="userSearchQuery" placeholder="Pretraži po imenu, prezimenu, organizaciji, ulozi..." />
+    </p-iconfield>
+  </div>
+
+  <p-table [value]="filteredUsers" [tableStyle]="{ 'min-width': '50rem' }">
     <ng-template #header>
       <tr>
         <th>Ime</th>

@@ -17,6 +17,15 @@
     font-weight: 600;
 }
 
+/* SEARCH */
+.search-bar {
+    margin-bottom: 1.5rem;
+}
+
+.search-bar input {
+    width: 430px;
+}
+
 /* GRID */
 .events-grid {
     display: grid;

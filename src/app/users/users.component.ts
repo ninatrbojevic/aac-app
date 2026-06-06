@@ -5,6 +5,8 @@ import { UserService } from './users.service';
 import { Button, ButtonDirective } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
 import { Select } from 'primeng/select';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -26,11 +28,25 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
     FormsModule,
     ReactiveFormsModule,
     ConfirmDialog,
-    Select
+    Select,
+    IconField,
+    InputIcon,
   ],
 })
 export class UsersComponent implements OnInit {
   users: any[] = [];
+  userSearchQuery = '';
+
+  get filteredUsers(): any[] {
+    const q = this.userSearchQuery.toLowerCase().trim();
+    if (!q) return this.users;
+    return this.users.filter(u =>
+      u.name?.toLowerCase().includes(q) ||
+      u.last_name?.toLowerCase().includes(q) ||
+      u.organization?.toLowerCase().includes(q) ||
+      u.role?.toLowerCase().includes(q)
+    );
+  }
 
   visibleDialogForm = false;
 
