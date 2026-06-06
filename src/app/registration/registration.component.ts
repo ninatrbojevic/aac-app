@@ -21,6 +21,8 @@ export class RegistrationComponent {
   lozinkaRepeat = '';
 
   greska = '';
+  showPassword = false;
+  showPasswordRepeat = false;
 
   constructor(private userService: UserService, private router: Router) {}
 

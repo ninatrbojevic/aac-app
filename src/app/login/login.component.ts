@@ -14,6 +14,7 @@ export class LoginComponent {
   email = '';
   lozinka = '';
   greska = '';
+  showPassword = false;
 
   constructor(private userService: UserService, private router: Router) {}
 
