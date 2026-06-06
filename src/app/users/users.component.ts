@@ -211,7 +211,7 @@ export class UsersComponent implements OnInit {
   private loadUsers() {
     this.userService.getUsers().subscribe({
       next: data => {
-        this.users = data || [];
+        this.users = (data || []).filter((u: any) => u.role !== 'Admin');
       },
       error: () => {
         this.messageService.add({
