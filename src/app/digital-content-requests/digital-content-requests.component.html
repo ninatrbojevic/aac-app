@@ -1,1 +1,161 @@
-<p>digital-content-requests works!</p>
+<p-toast />
+<p-confirmDialog />
+
+<div class="requests-page">
+
+  <div class="page-header">
+    <h1>{{ isAdmin() ? 'Svi zahtjevi' : 'Moji zahtjevi' }}</h1>
+  </div>
+
+  <!-- TABOVI -->
+  <div class="tabs">
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'aktivni'"
+      (click)="setTab('aktivni')">
+      Aktivni
+      <span class="tab-count">{{ activeRequests.length }}</span>
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'zavrseni'"
+      (click)="setTab('zavrseni')">
+      Završeni
+      <span class="tab-count">{{ finishedRequests.length }}</span>
+    </button>
+  </div>
+
+  <div *ngIf="currentRequests.length === 0" class="empty-state">
+    <i class="pi pi-inbox"></i>
+    <p>Nema zahtjeva za prikaz.</p>
+  </div>
+
+  <div class="requests-list" *ngIf="currentRequests.length > 0">
+    <div class="request-card" *ngFor="let req of currentRequests">
+
+        <div class="request-header">
+            <h3>{{ req.title }}</h3>
+            <div class="header-right">
+              <span class="status-badge" [ngClass]="getStatusClass(req.status)">
+                {{ getStatusLabel(req.status) }}
+              </span>
+              @if(isAdmin()) {
+                <button pButton label="Promijeni status" class="p-button-secondary p-button-sm"
+                  (click)="openStatusDialog(req)">
+                </button>
+              }
+              @if(!isAdmin() && canEdit(req)) {
+                <div class="header-actions">
+                  <div class="action-buttons">
+                    <button pButton label="Uredi" class="p-button-secondary p-button-sm"
+                      (click)="openEditDialog(req)">
+                    </button>
+                    <button pButton label="Obriši" class="p-button-danger p-button-outlined p-button-sm"
+                      (click)="confirmDelete(req)">
+                    </button>
+                  </div>
+                  
+                </div>
+              }
+            </div>
+          </div>
+          
+      <div class="request-meta">
+        @if(isAdmin()) {
+          <span>
+            <strong>Korisnik:</strong>
+            {{ req.user_id?.name }} {{ req.user_id?.last_name }}
+            <span class="user-email">({{ req.user_id?.email }})</span>
+          </span>
+        }
+        <span><strong>Autor:</strong> {{ req.author }}</span>
+        <span><strong>Oštećenje:</strong> {{ req.impairment }}</span>
+        <span><strong>Datum:</strong> {{ req.createdAt | date:'d. MMMM yyyy.' : '' : 'hr' }}</span>
+      </div>
+
+      <p class="request-description">{{ req.description }}</p>
+
+@if(!isAdmin() && canEdit(req)) {
+  <p class="edit-notice">
+    <i class="pi pi-info-circle"></i>
+    Zahtjev je moguće urediti ili obrisati unutar 30 min od slanja.
+  </p>
+}
+    </div>
+  </div>
+
+</div>
+
+<!-- STATUS DIALOG -->
+<p-dialog
+  header="Promjena statusa"
+  [(visible)]="visibleStatusDialog"
+  [modal]="true"
+  [style]="{ width: '380px' }"
+  [draggable]="false">
+
+  <div class="dialog-form">
+    <p style="margin-bottom: 1rem;">
+      Zahtjev: <strong>{{ selectedRequest?.title }}</strong>
+    </p>
+    <div class="field">
+      <label>Status</label>
+      <select [(ngModel)]="newStatus">
+        <option *ngFor="let opt of statusOptions" [value]="opt.value">
+          {{ opt.label }}
+        </option>
+      </select>
+    </div>
+    <div class="dialog-footer">
+      <button pButton type="button" label="Odustani" class="p-button-secondary"
+        (click)="visibleStatusDialog = false">
+      </button>
+      <button pButton type="button" label="Spremi" class="custom-btn"
+        (click)="saveStatus()">
+      </button>
+    </div>
+  </div>
+
+</p-dialog>
+
+<!-- EDIT DIALOG -->
+<p-dialog
+  header="Uredi zahtjev"
+  [(visible)]="visibleEditDialog"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  [draggable]="false">
+
+  <form [formGroup]="editForm" (ngSubmit)="saveEdit()" class="dialog-form">
+
+    <div class="field">
+      <label>Naziv</label>
+      <input pInputText formControlName="title" />
+    </div>
+
+    <div class="field">
+      <label>Autor</label>
+      <input pInputText formControlName="author" />
+    </div>
+
+    <div class="field">
+      <label>Opis</label>
+      <textarea pInputTextarea rows="3" formControlName="description"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Oštećenje</label>
+      <input pInputText formControlName="impairment" />
+    </div>
+
+    <div class="dialog-footer">
+      <button pButton type="button" label="Odustani" class="p-button-secondary"
+        (click)="visibleEditDialog = false">
+      </button>
+      <button pButton type="submit" label="Spremi" class="custom-btn">
+      </button>
+    </div>
+
+  </form>
+
+</p-dialog>

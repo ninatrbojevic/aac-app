@@ -24,4 +24,7 @@ export class DigitalContentRequestService {
 
   delete = (id: string) =>
     this.http.delete(this.apiUrl + id);
+  
+    getByUser = (userId: string) =>
+    this.http.get<any[]>(`${this.apiUrl}user/${userId}`);
 }

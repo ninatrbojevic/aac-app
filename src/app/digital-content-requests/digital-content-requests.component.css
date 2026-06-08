@@ -1,0 +1,251 @@
+.requests-page {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  .page-header {
+    margin-bottom: 2rem;
+  }
+  
+  .page-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+  
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: #aaa;
+    gap: 1rem;
+  }
+  
+  .empty-state i {
+    font-size: 3rem;
+  }
+  
+  .empty-state p {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  .requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .request-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .request-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+  
+  .status-badge {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  
+  .status-zaprimljeno {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+  
+  .status-u-obradi {
+    background: #fff8e1;
+    color: #f57f17;
+  }
+  
+  .status-zavrseno {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .status-odbijeno {
+    background: #ffebee;
+    color: #c62828;
+  }
+  
+  .request-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  .request-description {
+    font-size: 14px;
+    color: #555;
+    margin: 0;
+    line-height: 1.6;
+  }
+  
+  @media (max-width: 600px) {
+    .requests-page {
+      padding: 1rem;
+    }
+  
+    .request-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .dialog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem 0;
+  }
+  
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  
+  .field label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+  }
+  
+  .field select {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    background: #fafafa;
+    appearance: none;
+    cursor: pointer;
+  }
+  
+  .field select:focus {
+    outline: none;
+    border-color: #1976d2;
+  }
+  
+  .dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .user-email {
+    color: #999;
+    font-size: 12px;
+  }
+  .tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e0e0e0;
+  }
+  
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .tab-btn:hover {
+    color: #333;
+  }
+  
+  .tab-btn.active {
+    color: #1976d2;
+    border-bottom-color: #1976d2;
+  }
+  
+  .tab-count {
+    background: #e0e0e0;
+    color: #555;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+  
+  .tab-btn.active .tab-count {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+
+  .request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+  
+  .header-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .edit-notice {
+    font-size: 12px;
+    color: #888;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
