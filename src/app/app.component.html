@@ -6,13 +6,30 @@
     </button>
     <span class="app-title"><a href="home/">AAC Sustav</a></span>
   </div>
+
+  @if(userMenuOpen) {
+  <div class="dropdown-overlay" (click)="userMenuOpen = false"></div>
+  }
+
   <div class="user-info" (click)="toggleUserMenu()">
     <i class="pi pi-user"></i>
+
+    @if(isAdmin()) {
     <span>{{ userRole }}</span>
+    }
+    @if(!isAdmin()) {
+    <span>{{ userFullName }}</span>
+    }
 
     <div class="user-dropdown" *ngIf="userMenuOpen">
+      <div class="dropdown-header">
+        <span class="dropdown-role">Uloga: {{ userRole }}</span>
+      </div>
+      <button (click)="goToSettings($event)">
+        <i class="pi pi-cog"></i> Postavke
+      </button>
       <button (click)="logout($event)">
-        Odjava
+        <i class="pi pi-sign-out"></i> Odjava
       </button>
     </div>
   </div>
@@ -29,17 +46,17 @@
   </div>
   <nav class="nav-links">
     <a href="home/"><i class="pi pi-home"></i><span>Početna</span></a>
-    @if(isAdmin()) { <a href="users/"><i class="pi pi-user"></i><span>Pregled korisnika</span></a>}
+    @if(isAdmin()) {
+    <a href="users/"><i class="pi pi-user"></i><span>Pregled korisnika</span></a>
+    }
     <a href="events/"><i class="pi pi-calendar"></i><span>Pregled događaja</span></a>
-    <!-- <a href="#"><i class="pi pi-list"></i><span>Moje prijave</span></a> -->
     <a href="digital-content/"><i class="pi pi-file"></i><span>Digitalizirani sadržaj</span></a>
     @if(!isAdmin()) {
-      <a href="home/"><i class="pi pi-file"></i><span>Moji zahtjevi</span></a>
-    }@if(isAdmin()) {
-      <a href="home/"><i class="pi pi-file"></i><span>Pregled zahtjeva</span></a>
+    <a href="home/"><i class="pi pi-file"></i><span>Moji zahtjevi</span></a>
     }
-    <!-- <a href="#"><i class="pi pi-check-circle"></i><span>Potvrde</span></a> -->
-    <!-- <a href="#"><i class="pi pi-cog"></i><span>Postavke</span></a> -->
+    @if(isAdmin()) {
+    <a href="home/"><i class="pi pi-file"></i><span>Pregled zahtjeva</span></a>
+    }
   </nav>
 </div>
 }

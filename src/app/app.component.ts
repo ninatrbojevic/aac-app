@@ -16,12 +16,18 @@ export class AppComponent {
   isLoginPage = false;
   userMenuOpen = false;
 
-
   get userRole(): string {
     const raw = localStorage.getItem('currentUser');
     if (!raw) return '';
     const user = JSON.parse(raw);
     return user.role ?? '';
+  }
+
+  get userFullName(): string {
+    const raw = localStorage.getItem('currentUser');
+    if (!raw) return '';
+    const user = JSON.parse(raw);
+    return `${user.name ?? ''} ${user.last_name ?? ''}`.trim();
   }
 
   constructor(
@@ -33,6 +39,7 @@ export class AppComponent {
         this.isLoginPage =
           event.urlAfterRedirects === '/login' ||
           event.urlAfterRedirects === '/register';
+        this.userMenuOpen = false;
       }
     });
   }
@@ -44,13 +51,17 @@ export class AppComponent {
   toggleUserMenu(): void {
     this.userMenuOpen = !this.userMenuOpen;
   }
-  
+
+  goToSettings(event: Event): void {
+    event.stopPropagation();
+    this.userMenuOpen = false;
+    this.router.navigate(['/settings']);
+  }
+
   logout(event: Event): void {
     event.stopPropagation();
-  
     this.authService.logout();
     this.userMenuOpen = false;
-  
     this.router.navigate(['/login']);
   }
 
