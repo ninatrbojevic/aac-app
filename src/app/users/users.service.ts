@@ -32,4 +32,7 @@ export class UserService {
   checkUsername = (username: string) =>
   this.http.get<{ taken: boolean }>(`${this.apiUrl}check-username/${username}`);
 
+  changePassword = (userId: string, currentPassword: string, newPassword: string) =>
+  this.http.post(`${this.apiUrl}${userId}/change-password`, { currentPassword, newPassword });
+
 }

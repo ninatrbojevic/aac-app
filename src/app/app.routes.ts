@@ -6,6 +6,7 @@ import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
 import { DigitalContentComponent } from './digital-content/digital-content.component';
 import { authGuard } from './guards/auth.guard';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -17,6 +18,7 @@ export const routes: Routes = [
   { path: 'users', component: UsersComponent, canActivate: [authGuard] },
   { path: 'events', component: EventsComponent, canActivate: [authGuard] },
   { path: 'digital-content', component: DigitalContentComponent, canActivate: [authGuard] },
+  { path: 'settings', component: UserProfileComponent, canActivate: [authGuard] },
 
   { path: '**', redirectTo: 'login' }
 ];

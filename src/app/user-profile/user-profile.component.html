@@ -1,0 +1,112 @@
+<p-toast />
+
+<div class="profile-page">
+
+  <div class="page-header">
+    <h1>Postavke profila</h1>
+  </div>
+
+  <div class="profile-sections">
+
+    <!-- OSOBNI PODACI -->
+    <div class="profile-card">
+      <h2>Osobni podaci</h2>
+
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="profile-form">
+
+        <div class="field-row">
+          <div class="field">
+            <label>Ime</label>
+            <input pInputText formControlName="name" />
+          </div>
+          <div class="field">
+            <label>Prezime</label>
+            <input pInputText formControlName="last_name" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Email</label>
+          <input pInputText formControlName="email" type="email" />
+        </div>
+
+        <div class="field">
+          <label>Korisničko ime</label>
+          <input pInputText formControlName="username" />
+        </div>
+
+        <div class="field">
+          <label>Fakultet / Organizacija</label>
+          <select formControlName="organization">
+            <option value="">Odaberite</option>
+            <option value="UNIRI">Sveučilište u Rijeci</option>
+            <option value="APURI">Akademija primijenjenih umjetnosti</option>
+            <option value="EFRI">Ekonomski fakultet</option>
+            <option value="FABRI">Fakultet biotehnologije i razvoja lijekova</option>
+            <option value="FDMRI">Fakultet dentalne medicine</option>
+            <option value="FIDIT">Fakultet informatike i digitalnih tehnologija</option>
+            <option value="FIZRI">Fakultet za fiziku</option>
+            <option value="FMRI">Fakultet za matematiku</option>
+            <option value="FZSRI">Fakultet zdravstvenih studija</option>
+            <option value="FFRI">Filozofski fakultet</option>
+            <option value="GRADRI">Građevinski fakultet</option>
+            <option value="MEDRI">Medicinski fakultet</option>
+            <option value="PFRI">Pomorski fakultet</option>
+            <option value="PRAVRI">Pravni fakultet</option>
+            <option value="RITEH">Tehnički fakultet</option>
+            <option value="UFRI">Učiteljski fakultet</option>
+          </select>
+        </div>
+
+        <div class="form-footer">
+          <button pButton type="submit" label="Spremi promjene" class="custom-btn"></button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- PROMJENA LOZINKE -->
+    <div class="profile-card">
+      <h2>Promjena lozinke</h2>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="profile-form">
+
+        <div class="field">
+          <label>Trenutna lozinka</label>
+          <div class="password-wrapper">
+            <input pInputText [type]="showCurrentPassword ? 'text' : 'password'" formControlName="currentPassword" />
+            <button type="button" class="eye-btn" (click)="showCurrentPassword = !showCurrentPassword" tabindex="-1">
+              <i [class]="showCurrentPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Nova lozinka</label>
+          <div class="password-wrapper">
+            <input pInputText [type]="showNewPassword ? 'text' : 'password'" formControlName="newPassword" />
+            <button type="button" class="eye-btn" (click)="showNewPassword = !showNewPassword" tabindex="-1">
+              <i [class]="showNewPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Potvrda nove lozinke</label>
+          <div class="password-wrapper">
+            <input pInputText [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword" />
+            <button type="button" class="eye-btn" (click)="showConfirmPassword = !showConfirmPassword" tabindex="-1">
+              <i [class]="showConfirmPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <button pButton type="submit" label="Promijeni lozinku" class="custom-btn"></button>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>
