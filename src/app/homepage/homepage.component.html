@@ -19,15 +19,15 @@
             <!-- STATS -->
             <div class="stats">
                 <p-card>
-                    <div class="stat">
-                        <i class="pi pi-calendar"></i>
-                        <div>
-                            <strong>{{ eventCount ?? '—' }}</strong>
-                            <span>događaja</span>
-                        </div>
+                  <div class="stat">
+                    <i class="pi pi-calendar"></i>
+                    <div>
+                      <strong>{{ eventCount ?? '—' }}</strong>
+                      <span>događaja</span>
                     </div>
+                  </div>
                 </p-card>
-
+              
                 @if(isAdmin()) {
                   <p-card>
                     <div class="stat">
@@ -38,19 +38,41 @@
                       </div>
                     </div>
                   </p-card>
-                }
 
-                <p-card>
+                  <p-card>
                     <div class="stat">
-                        <i class="pi pi-file"></i>
-                        <div>
-                            <strong>{{ contentCount ?? '—' }}</strong>
-                            <span>sadržaja</span>
-                        </div>
+                      <i class="pi pi-list"></i>
+                      <div>
+                        <strong>{{ requestCount ?? '—' }}</strong>
+                        <span>zahtjeva</span>
+                      </div>
                     </div>
+                  </p-card>
+                }
+              
+                <p-card>
+                  <div class="stat">
+                    <i class="pi pi-file"></i>
+                    <div>
+                      <strong>{{ contentCount ?? '—' }}</strong>
+                      <span>sadržaja</span>
+                    </div>
+                  </div>
                 </p-card>
-            </div>
-
+                
+              
+                @if(!isAdmin()) {
+                  <p-card>
+                    <div class="stat">
+                      <i class="pi pi-list"></i>
+                      <div>
+                        <strong>{{ requestCount ?? '—' }}</strong>
+                        <span>zahtjeva</span>
+                      </div>
+                    </div>
+                  </p-card>
+                }
+              </div>
         </div>
     </p-card>
 
@@ -77,12 +99,19 @@
         </p-card>
       }
         @if(isAdmin()) {
-          <p-card>
+          <p-card class="clickable-card" (click)="goTo('/digital-content-requests')" tabindex="0" role="button">
               <i class="pi pi-chart-bar icon"></i>
-              <h3>Izvještaji</h3>
-              <p>Generiranje i pregled izvještaja</p>
+              <h3>Zahtjevi</h3>
+              <p>Pregled i upravljanje zahtjevima za digitalizaciju</p>
           </p-card>
         }
+        @if(!isAdmin()) {
+            <p-card class="clickable-card" (click)="goTo('/digital-content-requests')" tabindex="0" role="button">
+                <i class="pi pi-chart-bar icon"></i>
+                <h3>Moji zahtjevi</h3>
+                <p>Pregled zahtjevia za digitalizaciju</p>
+            </p-card>
+          }
     </div>
 
 </div>
