@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../users/users.service';
+import { debounceTime, distinctUntilChanged, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-registration',
@@ -17,6 +18,7 @@ export class RegistrationComponent {
   fakultet = '';
   email = '';
   emailRepeat = '';
+  username = '';
   lozinka = '';
   lozinkaRepeat = '';
 
@@ -24,7 +26,38 @@ export class RegistrationComponent {
   showPassword = false;
   showPasswordRepeat = false;
 
-  constructor(private userService: UserService, private router: Router) {}
+  usernameZauzet = false;
+  usernameProvjerava = false;
+
+  private usernameInput$ = new Subject<string>();
+
+  constructor(private userService: UserService, private router: Router) {
+    this.usernameInput$.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      switchMap(username => {
+        if (!username || username.length < 3) {
+          this.usernameZauzet = false;
+          this.usernameProvjerava = false;
+          return [];
+        }
+        this.usernameProvjerava = true;
+        return this.userService.checkUsername(username);
+      })
+    ).subscribe({
+      next: (res: any) => {
+        this.usernameZauzet = res.taken;
+        this.usernameProvjerava = false;
+      },
+      error: () => {
+        this.usernameProvjerava = false;
+      }
+    });
+  }
+
+  onUsernameInput(): void {
+    this.usernameInput$.next(this.username);
+  }
 
   onRegistracija() {
     this.greska = '';
@@ -44,10 +77,21 @@ export class RegistrationComponent {
       return;
     }
 
+    if (this.usernameZauzet) {
+      this.greska = 'Korisničko ime je već zauzeto.';
+      return;
+    }
+    
+    if (this.username && this.username.length < 3) {
+      this.greska = 'Korisničko ime mora imati najmanje 3 znaka.';
+      return;
+    }
+
     const payload = {
       name: this.ime,
       last_name: this.prezime,
       email: this.email,
+      username: this.username,
       organization: this.fakultet,
       role: this.uloga,
       password: this.lozinka

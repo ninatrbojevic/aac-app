@@ -28,5 +28,8 @@ export class UserService {
 
   login = (email: string, password: string) =>
     this.http.post<any>(this.apiUrl + 'login', { email, password });
+  
+  checkUsername = (username: string) =>
+  this.http.get<{ taken: boolean }>(`${this.apiUrl}check-username/${username}`);
 
 }

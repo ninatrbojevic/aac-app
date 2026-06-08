@@ -144,3 +144,20 @@
   margin: 0;
   text-align: center;
 }
+
+.info-msg {
+  color: var(--text-color-secondary);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.success-msg {
+  color: green;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.login-text {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 24px;
+}

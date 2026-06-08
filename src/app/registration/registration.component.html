@@ -29,8 +29,30 @@
       </div>
 
       <div class="field">
-        <input type="text" [(ngModel)]="fakultet" placeholder="Fakultet/Organizacija" />
+        <select [(ngModel)]="fakultet" name="fakultet" [class.placeholder]="!fakultet">
+          <option value="" disabled selected>Odaberite fakultet/organizaciju</option>
+          <option value="UNIRI">Sveučilište u Rijeci</option>
+          <option value="APURI">Akademija primijenjenih umjetnosti</option>
+          <option value="EFRI">Ekonomski fakultet</option>
+          <option value="FABRI">Fakultet biotehnologije i razvoja lijekova</option>
+          <option value="FDMRI">Fakultet dentalne medicine</option>
+          <option value="FIDIT">Fakultet informatike i digitalnih tehnologija</option>
+          <option value="FIZRI">Fakultet za fiziku</option>
+          <option value="FMRI">Fakultet za matematiku</option>
+          <option value="FZSRI">Fakultet zdravstvenih studija</option>
+          <option value="FFRI">Filozofski fakultet</option>
+          <option value="GRADRI">	Građevinski fakultet</option>
+          <option value="MEDRI">Medicinski fakultet</option>
+          <option value="PFRI">Pomorski fakultet</option>
+          <option value="PRAVRI">Pravni fakultet</option>
+          <option value="RITEH">Tehnički fakultet</option>
+          <option value="UFRI">Učiteljski fakultet</option>
+        </select>
       </div>
+
+      <!-- <div class="field">
+        <input type="text" [(ngModel)]="fakultet" placeholder="Fakultet/Organizacija" />
+      </div> -->
 
       <div class="field">
         <input type="email" [(ngModel)]="email" placeholder="Email adresa" />
@@ -38,6 +60,23 @@
 
       <div class="field">
         <input type="email" [(ngModel)]="emailRepeat" placeholder="Ponovni unos emaila" />
+      </div>
+
+      <div class="field">
+        <input
+          type="text"
+          [(ngModel)]="username"
+          placeholder="Korisničko ime"
+          (input)="onUsernameInput()" />
+        @if (usernameProvjerava) {
+          <p class="info-msg">Provjera dostupnosti...</p>
+        }
+        @if (!usernameProvjerava && usernameZauzet) {
+          <p class="error-msg">Korisničko ime je već zauzeto.</p>
+        }
+        @if (!usernameProvjerava && !usernameZauzet && username.length >= 3) {
+          <p class="success-msg">Korisničko ime je dostupno.</p>
+        }
       </div>
 
       <div class="field">
@@ -83,6 +122,10 @@
       }
 
       <button class="btn-reg" (click)="onRegistracija()">Registracija</button>
+
+      <p class="login-text">
+        Imate račun? <a routerLink="/login">Prijavite se</a>
+      </p>
 
     </div>
   </div>
