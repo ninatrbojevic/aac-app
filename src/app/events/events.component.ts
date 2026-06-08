@@ -94,6 +94,7 @@ export class EventsComponent implements OnInit {
       next: data => {
         this.events = (data || []).map(event => ({
           ...event,
+          status: event.status ?? 'active',  
           isRegistered: this.currentUser
             ? event.registeredUsers?.some((u: CurrentUser) => u._id === this.currentUser!._id) ?? false
             : false
@@ -141,7 +142,7 @@ export class EventsComponent implements OnInit {
     this.userSearchQuery = '';
     this.selectedUserToAdd = null;
     this.filteredUsers = [];
-    this.loadAllUsers();          
+    this.loadAllUsers();
     this.visibleRegisteredDialog = true;
   }
 
@@ -245,20 +246,6 @@ export class EventsComponent implements OnInit {
     });
   }
 
-  // private loadEvents(): void {
-  //   this.eventService.getEvents().subscribe({
-  //     next: data => {
-  //       this.events = data || [];
-  //     },
-  //     error: () => {
-  //       this.messageService.add({
-  //         severity: 'error',
-  //         summary: 'Error',
-  //         detail: 'Failed to load events.',
-  //       });
-  //     }
-  //   });
-  // }
 
   private closeDialog(): void {
     this.visibleDialogForm = false;
@@ -416,7 +403,6 @@ export class EventsComponent implements OnInit {
       }
     });
   }
-
   confirmEvent(event: any): void {
     if (!event.registeredUsers || event.registeredUsers.length === 0) {
       this.messageService.add({
@@ -426,7 +412,7 @@ export class EventsComponent implements OnInit {
       });
       return;
     }
-  
+
     this.confirmationService.confirm({
       message: `Želite li poslati potvrde svim prijavljenim korisnicima za događaj "${event.name}"?`,
       header: 'Potvrdi slanje',
@@ -436,6 +422,8 @@ export class EventsComponent implements OnInit {
       accept: () => {
         this.eventService.confirmEvent(event._id).subscribe({
           next: () => {
+            event.status = 'finished'; // lokalno ažuriranje
+            this.visibleRegisteredDialog = false;
             this.messageService.add({
               severity: 'success',
               summary: 'Uspješno',
@@ -452,5 +440,22 @@ export class EventsComponent implements OnInit {
         });
       }
     });
+  }
+
+  activeTab: 'active' | 'finished' = 'active';
+
+  get tabbedEvents(): any[] {
+    return this.filteredEvents.filter(e =>
+      this.activeTab === 'finished'
+        ? e.status === 'finished'
+        : e.status !== 'finished'
+    );
+  }
+  get activeCount(): number {
+    return this.events.filter(e => e.status !== 'finished').length;
+  }
+
+  get finishedCount(): number {
+    return this.events.filter(e => e.status === 'finished').length;
   }
 }

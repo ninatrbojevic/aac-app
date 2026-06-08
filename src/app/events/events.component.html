@@ -2,48 +2,59 @@
 
 <div class="events-page">
 
-    <!-- HEADER -->
-    <div class="page-header">
-        <h1>Događaji i edukacije</h1>
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1>Događaji i edukacije</h1>
+    @if(isAdmin()){
+    <button pButton label="Novi događaj" class="custom-btn" (click)="showCreateDialog()">
+    </button>}
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <p-iconfield>
+      <p-inputicon styleClass="pi pi-search" />
+      <input pInputText [(ngModel)]="eventSearchQuery" placeholder="Pretraži po nazivu..." />
+    </p-iconfield>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn" [class.active]="activeTab === 'active'" (click)="activeTab = 'active'">
+      Aktivni
+      <span class="tab-count">{{ activeCount }}</span>
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'finished'" (click)="activeTab = 'finished'">
+      Završeni
+      <span class="tab-count">{{ finishedCount }}</span>
+    </button>
+  </div>
+
+  <!-- GRID -->
+  <div class="events-grid">
+    <div class="event-card" *ngFor="let event of tabbedEvents">
+
+      <div class="card-content">
+        <h3>{{ event.name }}</h3>
+
+        <p class="meta">
+          {{ event.date | date:'d. MMMM yyyy.' : '' : 'hr' }}
+          u {{ event.date | date:'HH:mm' }} sati
+          <span>|</span>
+          {{ event.location }}
+        </p>
+      </div>
+
+      <div class="card-actions">
+        <button pButton label="Detalji" class="custom-btn p-button-sm" (click)="openPreviewDialog(event)">
+        </button>
         @if(isAdmin()){
-        <button pButton label="Novi događaj" class="custom-btn" (click)="showCreateDialog()">
+        <button pButton label="Uredi" class="p-button-secondary p-button-sm" (click)="openUpdateDialog(event)">
         </button>}
-    </div>
-
-    <!-- SEARCH -->
-    <div class="search-bar">
-        <p-iconfield>
-            <p-inputicon styleClass="pi pi-search" />
-            <input pInputText [(ngModel)]="eventSearchQuery" placeholder="Pretraži po nazivu..." />
-        </p-iconfield>
-    </div>
-
-    <!-- GRID -->
-    <div class="events-grid">
-        <div class="event-card" *ngFor="let event of filteredEvents">
-
-            <div class="card-content">
-                <h3>{{ event.name }}</h3>
-
-                <p class="meta">
-                    {{ event.date | date:'d. MMMM yyyy.' : '' : 'hr' }}
-                    u {{ event.date | date:'HH:mm' }} sati
-                    <span>|</span>
-                    {{ event.location }}
-                </p>
-            </div>
-
-            <div class="card-actions">
-                <button pButton label="Detalji" class="custom-btn p-button-sm" (click)="openPreviewDialog(event)">
-                </button>
-                @if(isAdmin()){
-                <button pButton label="Uredi" class="p-button-secondary p-button-sm" (click)="openUpdateDialog(event)">
-                </button>}
-                @if(isAdmin()){
-                <button pButton label="Obriši" class="p-button-danger p-button-outlined p-button-sm"
-                    (click)="confirmDelete(event)">
-                </button>}
-                <!-- @if(!isAdmin()){
+        @if(isAdmin()){
+        <button pButton label="Obriši" class="p-button-danger p-button-outlined p-button-sm"
+          (click)="confirmDelete(event)">
+        </button>}
+        <!-- @if(!isAdmin()){
                     <button
                       pButton
                       class="custom-btn p-button-sm"
@@ -51,143 +62,135 @@
                       [label]="event.isJoined ? 'Odjavi se' : 'Prijavi se'">
                     </button>
                   } -->
-                  @if(!isAdmin()){
-                    <button pButton class="custom-btn p-button-sm"
-                      (click)="toggleRegistration(event)"
-                      [label]="event.isRegistered ? 'Odjavi se' : 'Prijavi se'">
-                    </button>
-                  }
-                  @if(isAdmin()){
-                    <button pButton label="Prijavljeni"
-                      class="p-button-secondary p-button-sm"
-                      (click)="openRegisteredDialog(event)">
-                    </button>
-                  }
-            </div>
+        @if(!isAdmin()){
+        <button pButton class="custom-btn p-button-sm" (click)="toggleRegistration(event)"
+          [label]="event.isRegistered ? 'Odjavi se' : 'Prijavi se'">
+        </button>
+        }
+        @if(isAdmin()){
+        <button pButton label="Prijavljeni" class="p-button-secondary p-button-sm"
+          (click)="openRegisteredDialog(event)">
+        </button>
+        }
+      </div>
 
-        </div>
     </div>
+  </div>
 </div>
 
 <!-- PREVIEW DIALOG -->
 <p-dialog header="Detalji događaja" [(visible)]="visiblePreviewDialog" [modal]="true" [style]="{ width: '500px' }"
-    [draggable]="false" class="event-dialog">
+  [draggable]="false" class="event-dialog">
 
-    <div *ngIf="selectedEvent" class="dialog-form">
+  <div *ngIf="selectedEvent" class="dialog-form">
 
-        <div class="detail-row">
-            <span>📅 Datum i vrijeme:</span>
-            <span>
-                {{ selectedEvent.date | date:'d. MMMM yyyy.' : '' : 'hr' }}
-                u {{ selectedEvent.date | date:'HH:mm' }}
-            </span>
-        </div>
-
-        <div class="detail-row">
-            <span>📍 Lokacija:</span>
-            <span>{{ selectedEvent.location || '-' }}</span>
-        </div>
-
-        <div class="detail-row">
-            <span>⏱ Trajanje:</span>
-            <span>{{ selectedEvent.duration }} min</span>
-        </div>
-
-        <div class="detail-row">
-            <span>👥 Kapacitet:</span>
-            <span>{{ selectedEvent.capacity }}</span>
-        </div>
-
-        <div class="detail-row">
-            <span>🍽 Catering:</span>
-            <span>{{ selectedEvent.catering ? 'DA' : 'NE' }}</span>
-        </div>
-
-        <div class="detail-row">
-            <span>🤝 Suradnici:</span>
-            <span>{{ selectedEvent.collaborators ? 'DA' : 'NE' }}</span>
-        </div>
-
-        <div class="detail-description">
-            <span>📝 Opis:</span>
-            <p>{{ selectedEvent.description }}</p>
-        </div>
-
+    <div class="detail-row">
+      <span>📅 Datum i vrijeme:</span>
+      <span>
+        {{ selectedEvent.date | date:'d. MMMM yyyy.' : '' : 'hr' }}
+        u {{ selectedEvent.date | date:'HH:mm' }}
+      </span>
     </div>
+
+    <div class="detail-row">
+      <span>📍 Lokacija:</span>
+      <span>{{ selectedEvent.location || '-' }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span>⏱ Trajanje:</span>
+      <span>{{ selectedEvent.duration }} min</span>
+    </div>
+
+    <div class="detail-row">
+      <span>👥 Kapacitet:</span>
+      <span>{{ selectedEvent.capacity }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span>🍽 Catering:</span>
+      <span>{{ selectedEvent.catering ? 'DA' : 'NE' }}</span>
+    </div>
+
+    <div class="detail-row">
+      <span>🤝 Suradnici:</span>
+      <span>{{ selectedEvent.collaborators ? 'DA' : 'NE' }}</span>
+    </div>
+
+    <div class="detail-description">
+      <span>📝 Opis:</span>
+      <p>{{ selectedEvent.description }}</p>
+    </div>
+
+  </div>
 
 </p-dialog>
 
 <!-- CREATE / EDIT DIALOG (ostaje isti) -->
 <p-dialog [header]="selectedEvent ? 'Uredi događaj' : 'Novi događaj'" [(visible)]="visibleDialogForm" [modal]="true"
-    [style]="{ width: '520px' }" [draggable]="false" class="event-dialog">
+  [style]="{ width: '520px' }" [draggable]="false" class="event-dialog">
 
-    <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-form">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="dialog-form">
 
-        <div class="field">
-            <label>Naziv</label>
-            <input pInputText formControlName="name" />
-        </div>
+    <div class="field">
+      <label>Naziv</label>
+      <input pInputText formControlName="name" />
+    </div>
 
-        <div class="field">
-            <label>Opis</label>
-            <textarea pInputTextarea rows="3" formControlName="description"></textarea>
-        </div>
+    <div class="field">
+      <label>Opis</label>
+      <textarea pInputTextarea rows="3" formControlName="description"></textarea>
+    </div>
 
-        <div class="field">
-            <label>Datum i vrijeme</label>
-            <input type="datetime-local" pInputText formControlName="date" />
-        </div>
+    <div class="field">
+      <label>Datum i vrijeme</label>
+      <input type="datetime-local" pInputText formControlName="date" />
+    </div>
 
-        <div class="field">
-            <label>Lokacija</label>
-            <input pInputText formControlName="location" />
-        </div>
+    <div class="field">
+      <label>Lokacija</label>
+      <input pInputText formControlName="location" />
+    </div>
 
-        <div class="field-row">
-            <div class="field">
-                <label>Kapacitet</label>
-                <input type="number" pInputText formControlName="capacity" />
-            </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Kapacitet</label>
+        <input type="number" pInputText formControlName="capacity" />
+      </div>
 
-            <div class="field">
-                <label>Trajanje (min)</label>
-                <input type="number" pInputText formControlName="duration" />
-            </div>
-        </div>
+      <div class="field">
+        <label>Trajanje (min)</label>
+        <input type="number" pInputText formControlName="duration" />
+      </div>
+    </div>
 
-        <div class="checkbox-row">
-            <div class="field-checkbox">
-                <p-checkbox formControlName="catering" binary="true"></p-checkbox>
-                <label>Catering</label>
-            </div>
+    <div class="checkbox-row">
+      <div class="field-checkbox">
+        <p-checkbox formControlName="catering" binary="true"></p-checkbox>
+        <label>Catering</label>
+      </div>
 
-            <div class="field-checkbox">
-                <p-checkbox formControlName="collaborators" binary="true"></p-checkbox>
-                <label>Suradnici</label>
-            </div>
-        </div>
+      <div class="field-checkbox">
+        <p-checkbox formControlName="collaborators" binary="true"></p-checkbox>
+        <label>Suradnici</label>
+      </div>
+    </div>
 
-        <div class="dialog-footer">
-            <button pButton type="button" label="Odustani" class="p-button-secondary"
-                (click)="visibleDialogForm = false">
-            </button>
+    <div class="dialog-footer">
+      <button pButton type="button" label="Odustani" class="p-button-secondary" (click)="visibleDialogForm = false">
+      </button>
 
-            <button pButton type="submit" [label]="selectedEvent ? 'Spremi' : 'Kreiraj'">
-            </button>
-        </div>
+      <button pButton type="submit" [label]="selectedEvent ? 'Spremi' : 'Kreiraj'">
+      </button>
+    </div>
 
-    </form>
+  </form>
 </p-dialog>
 
 
 <!-- PRIJAVLJENI DIALOG -->
-<p-dialog
-  header="Prijavljeni korisnici"
-  [(visible)]="visibleRegisteredDialog"
-  [modal]="true"
-  [style]="{ width: '480px' }"
-  [draggable]="false"
-  class="event-dialog">
+<p-dialog header="Prijavljeni korisnici" [(visible)]="visibleRegisteredDialog" [modal]="true"
+  [style]="{ width: '480px' }" [draggable]="false" class="event-dialog">
 
   <div class="dialog-form">
 
@@ -200,35 +203,23 @@
       <label style="display:block; margin-bottom: 0.4rem; font-weight: 500;">Dodaj korisnika</label>
       <div style="display: flex; gap: 0.5rem;">
         <div style="flex: 1; position: relative;">
-          <input
-            pInputText
-            [(ngModel)]="userSearchQuery"
-            (ngModelChange)="searchUsers()"
-            placeholder="Pretraži po imenu..."
-            style="width: 100%;" />
+          <input pInputText [(ngModel)]="userSearchQuery" (ngModelChange)="searchUsers()"
+            placeholder="Pretraži po imenu..." style="width: 100%;" />
 
           <!-- dropdown rezultati -->
-          <ul *ngIf="filteredUsers.length > 0"
-            style="position: absolute; z-index: 1100; background: white;
+          <ul *ngIf="filteredUsers.length > 0" style="position: absolute; z-index: 1100; background: white;
        border: 1px solid #dee2e6; border-radius: 6px;
        list-style: none; margin: 0; padding: 4px 0; width: 100%;
        box-shadow: 0 4px 12px rgba(0,0,0,0.15); top: 100%; left: 0;">
-            <li *ngFor="let user of filteredUsers"
-              (click)="selectUserToAdd(user)"
-              style="padding: 8px 12px; cursor: pointer;"
-              onmouseover="this.style.background='var(--surface-hover)'"
+            <li *ngFor="let user of filteredUsers" (click)="selectUserToAdd(user)"
+              style="padding: 8px 12px; cursor: pointer;" onmouseover="this.style.background='var(--surface-hover)'"
               onmouseout="this.style.background='transparent'">
               {{ user.name }} {{ user.last_name }}
             </li>
           </ul>
         </div>
 
-        <button
-          pButton
-          label="Dodaj"
-          icon="pi pi-plus"
-          class="custom-btn"
-          [disabled]="!selectedUserToAdd"
+        <button pButton label="Dodaj" icon="pi pi-plus" class="custom-btn" [disabled]="!selectedUserToAdd"
           (click)="addUserToEvent()">
         </button>
       </div>
@@ -240,15 +231,10 @@
     </p>
 
     <ul *ngIf="getRegisteredUsers().length > 0" style="list-style: none; padding: 0; margin: 0;">
-      <li
-        *ngFor="let user of getRegisteredUsers()"
-        style="display: flex; justify-content: space-between; align-items: center;
+      <li *ngFor="let user of getRegisteredUsers()" style="display: flex; justify-content: space-between; align-items: center;
                padding: 8px 0; border-bottom: 1px solid var(--surface-border);">
         <span>{{ user.name }} {{ user.last_name }}</span>
-        <button
-          pButton
-          label="Ukloni"
-          class="p-button-danger p-button-outlined p-button-sm"
+        <button pButton label="Ukloni" class="p-button-danger p-button-outlined p-button-sm"
           (click)="removeUserFromEvent(user)">
         </button>
       </li>
@@ -257,12 +243,7 @@
   </div>
 
   <ng-template pTemplate="footer">
-    <button
-      pButton
-      label="Ovjeri"
-      icon="pi pi-check"
-      class="custom-btn"
-      (click)="confirmEvent(selectedEvent)">
+    <button pButton label="Ovjeri" icon="pi pi-check" class="custom-btn" (click)="confirmEvent(selectedEvent)">
     </button>
   </ng-template>
 
