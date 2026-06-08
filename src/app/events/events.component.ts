@@ -416,4 +416,41 @@ export class EventsComponent implements OnInit {
       }
     });
   }
+
+  confirmEvent(event: any): void {
+    if (!event.registeredUsers || event.registeredUsers.length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Upozorenje',
+        detail: 'Nema prijavljenih korisnika za ovaj događaj.'
+      });
+      return;
+    }
+  
+    this.confirmationService.confirm({
+      message: `Želite li poslati potvrde svim prijavljenim korisnicima za događaj "${event.name}"?`,
+      header: 'Potvrdi slanje',
+      icon: 'pi pi-envelope',
+      acceptLabel: 'Pošalji',
+      rejectLabel: 'Odustani',
+      accept: () => {
+        this.eventService.confirmEvent(event._id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Uspješno',
+              detail: 'Potvrde su poslane svim prijavljenim korisnicima.'
+            });
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Greška',
+              detail: 'Slanje potvrda nije uspjelo.'
+            });
+          }
+        });
+      }
+    });
+  }
 }

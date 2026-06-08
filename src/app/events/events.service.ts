@@ -34,4 +34,6 @@ export class EventService {
   unregisterFromEvent = (eventId: string, userId: string) =>
   this.http.delete(`${this.apiUrl}${eventId}/register/${userId}`);
 
+  confirmEvent = (eventId: string) =>
+  this.http.post(`${this.apiUrl}${eventId}/confirm`, {});
 }

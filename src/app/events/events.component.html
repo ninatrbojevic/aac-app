@@ -257,7 +257,13 @@
   </div>
 
   <ng-template pTemplate="footer">
-    <button pButton label="Zatvori" class="p-button-secondary" (click)="visibleRegisteredDialog = false"></button>
+    <button
+      pButton
+      label="Ovjeri"
+      icon="pi pi-check"
+      class="custom-btn"
+      (click)="confirmEvent(selectedEvent)">
+    </button>
   </ng-template>
 
 </p-dialog>
