@@ -25,6 +25,12 @@
           </div>
         </div>
 
+        @if(currentUser?.role === 'Profesor') {
+        <div class="field">
+          <label>Titula</label>
+          <input pInputText formControlName="titula" />
+        </div>
+        }
         <div class="field">
           <label>Email</label>
           <input pInputText formControlName="email" type="email" />
@@ -32,7 +38,16 @@
 
         <div class="field">
           <label>Korisničko ime</label>
-          <input pInputText formControlName="username" />
+          <input pInputText formControlName="username" (input)="onUsernameInput()" />
+          @if (usernameProvjerava) {
+          <p class="info-msg">Provjera dostupnosti...</p>
+          }
+          @if (!usernameProvjerava && usernameZauzet) {
+          <p class="error-msg">Korisničko ime je već zauzeto.</p>
+          }
+          @if (!usernameProvjerava && !usernameZauzet && profileForm.get('username')?.value?.length >= 3) {
+          <p class="success-msg">Korisničko ime je dostupno.</p>
+          }
         </div>
 
         <div class="field">

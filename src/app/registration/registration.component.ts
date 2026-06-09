@@ -30,6 +30,8 @@ export class RegistrationComponent {
   usernameZauzet = false;
   usernameProvjerava = false;
 
+  title = '';
+
   private usernameInput$ = new Subject<string>();
 
   constructor(private userService: UserService, private router: Router) {
@@ -95,7 +97,8 @@ export class RegistrationComponent {
       username: this.username,
       organization: this.fakultet,
       role: this.uloga,
-      password: this.lozinka
+      password: this.lozinka,
+      title: this.uloga === 'Profesor' ? this.title : ''
     };
 
     this.userService.createUser(payload).subscribe({

@@ -18,8 +18,8 @@
     <span>{{ userRole }}</span>
     }
     @if(!isAdmin()) {
-    <span>{{ userFullName }}</span>
-    }
+      <span>{{ userTitle ? userTitle + ' ' : '' }}{{ userFullName }}</span>
+      }
 
     <div class="user-dropdown" *ngIf="userMenuOpen">
       <div class="dropdown-header">

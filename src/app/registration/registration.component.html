@@ -27,6 +27,11 @@
           <option value="Profesor">Profesor</option>
         </select>
       </div>
+      @if (uloga === 'Profesor') {
+        <div class="field">
+          <input type="text" [(ngModel)]="title" placeholder="title (npr. doc. dr. sc.)" />
+        </div>
+      }
 
       <div class="field">
         <select [(ngModel)]="fakultet" name="fakultet" [class.placeholder]="!fakultet">
@@ -49,10 +54,6 @@
           <option value="UFRI">Učiteljski fakultet</option>
         </select>
       </div>
-
-      <!-- <div class="field">
-        <input type="text" [(ngModel)]="fakultet" placeholder="Fakultet/Organizacija" />
-      </div> -->
 
       <div class="field">
         <input type="email" [(ngModel)]="email" placeholder="Email adresa" />

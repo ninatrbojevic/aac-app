@@ -68,4 +68,11 @@ export class AppComponent {
   isAdmin(): boolean {
     return this.authService.userHasRole(UserRole.Admin);
   }
+
+  get userTitle(): string {
+    const raw = localStorage.getItem('currentUser');
+    if (!raw) return '';
+    const user = JSON.parse(raw);
+    return user.title ?? '';
+  }
 }

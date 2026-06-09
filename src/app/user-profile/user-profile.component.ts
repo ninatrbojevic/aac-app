@@ -7,6 +7,7 @@ import { MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { InputText } from 'primeng/inputtext';
 import { ButtonDirective } from 'primeng/button';
+import { debounceTime, distinctUntilChanged, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-user-profile',
@@ -26,6 +27,10 @@ export class UserProfileComponent implements OnInit {
   showNewPassword = false;
   showConfirmPassword = false;
 
+  usernameZauzet = false;
+  usernameProvjerava = false;
+  private usernameInput$ = new Subject<string>();
+
   constructor(
     private userService: UserService,
     private authService: AuthService,
@@ -41,13 +46,40 @@ export class UserProfileComponent implements OnInit {
       email: new FormControl(this.currentUser?.email ?? '', [Validators.required, Validators.email]),
       username: new FormControl(this.currentUser?.username ?? ''),
       organization: new FormControl(this.currentUser?.organization ?? ''),
+      titula: new FormControl(this.currentUser?.titula ?? ''),
     });
 
-    this.passwordForm = new FormGroup({
-      currentPassword: new FormControl('', [Validators.required]),
-      newPassword: new FormControl('', [Validators.required, Validators.minLength(6)]),
-      confirmPassword: new FormControl('', [Validators.required]),
+    this.usernameInput$.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      switchMap(username => {
+        if (!username || username.length < 3) {
+          this.usernameZauzet = false;
+          this.usernameProvjerava = false;
+          return [];
+        }
+        // preskoči provjeru ako je isto kao trenutno korisničko ime
+        if (username === this.currentUser?.username) {
+          this.usernameZauzet = false;
+          this.usernameProvjerava = false;
+          return [];
+        }
+        this.usernameProvjerava = true;
+        return this.userService.checkUsername(username);
+      })
+    ).subscribe({
+      next: (res: any) => {
+        this.usernameZauzet = res.taken;
+        this.usernameProvjerava = false;
+      },
+      error: () => {
+        this.usernameProvjerava = false;
+      }
     });
+  }
+
+  onUsernameInput(): void {
+    this.usernameInput$.next(this.profileForm.get('username')?.value ?? '');
   }
 
   saveProfile(): void {
@@ -56,22 +88,25 @@ export class UserProfileComponent implements OnInit {
       return;
     }
 
+    const username = this.profileForm.get('username')?.value;
+    if (username && username.length < 3) {
+      this.messageService.add({ severity: 'warn', summary: 'Upozorenje', detail: 'Korisničko ime mora imati najmanje 3 znaka.' });
+      return;
+    }
+
+    if (this.usernameZauzet) {
+      this.messageService.add({ severity: 'warn', summary: 'Upozorenje', detail: 'Korisničko ime je već zauzeto.' });
+      return;
+    }
+
     this.userService.updateUser(this.currentUser._id, this.profileForm.value).subscribe({
       next: (updatedUser) => {
         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
         this.currentUser = updatedUser;
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Uspješno',
-          detail: 'Podaci su uspješno ažurirani.'
-        });
+        this.messageService.add({ severity: 'success', summary: 'Uspješno', detail: 'Podaci su uspješno ažurirani.' });
       },
       error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Greška',
-          detail: 'Ažuriranje nije uspjelo.'
-        });
+        this.messageService.add({ severity: 'error', summary: 'Greška', detail: 'Ažuriranje nije uspjelo.' });
       }
     });
   }
@@ -85,29 +120,17 @@ export class UserProfileComponent implements OnInit {
     const { newPassword, confirmPassword, currentPassword } = this.passwordForm.value;
 
     if (newPassword !== confirmPassword) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Upozorenje',
-        detail: 'Nove lozinke se ne podudaraju.'
-      });
+      this.messageService.add({ severity: 'warn', summary: 'Upozorenje', detail: 'Nove lozinke se ne podudaraju.' });
       return;
     }
 
     this.userService.changePassword(this.currentUser._id, currentPassword, newPassword).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Uspješno',
-          detail: 'Lozinka je uspješno promijenjena.'
-        });
+        this.messageService.add({ severity: 'success', summary: 'Uspješno', detail: 'Lozinka je uspješno promijenjena.' });
         this.passwordForm.reset();
       },
       error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Greška',
-          detail: err.error?.message ?? 'Promjena lozinke nije uspjela.'
-        });
+        this.messageService.add({ severity: 'error', summary: 'Greška', detail: err.error?.message ?? 'Promjena lozinke nije uspjela.' });
       }
     });
   }
