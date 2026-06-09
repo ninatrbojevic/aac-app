@@ -1,0 +1,254 @@
+<p-toast />
+
+<div class="reports-page">
+
+  <div class="page-header">
+    <h1>Izvještaji</h1>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn" [class.active]="activeTab === 'events'" (click)="activeTab = 'events'">
+      📅 Izvještaj o događajima
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'content'" (click)="activeTab = 'content'">
+      📁 Izvještaj o sadržaju
+    </button>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <div class="filter-field">
+      <label>Od datuma</label>
+      <input type="date" [(ngModel)]="dateFrom" />
+    </div>
+    <div class="filter-field">
+      <label>Do datuma</label>
+      <input type="date" [(ngModel)]="dateTo" />
+    </div>
+    <button class="custom-btn filter-btn" (click)="applyFilter()">Primijeni filter</button>
+  </div>
+
+  <!-- EVENTS TAB -->
+  @if(activeTab === 'events') {
+  <div class="report-section">
+
+    <!-- SUMMARY KARTICE -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <span class="summary-label">Ukupno događaja</span>
+        <span class="summary-value">{{ filteredEvents.length }}</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-label">Ukupno sudionika</span>
+        <span class="summary-value">{{ totalParticipants }}</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-label">Završeni događaji</span>
+        <span class="summary-value">{{ finishedEventsCount }}</span>
+      </div>
+    </div>
+
+    <!-- TABELA DOGAĐAJA -->
+    <div class="report-card">
+      <h2>Sudionici po događaju</h2>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Naziv događaja</th>
+            <th>Datum</th>
+            <th>Lokacija</th>
+            <th>Kapacitet</th>
+            <th>Prijavljeni</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(event of filteredEvents; track event._id) {
+          <tr>
+            <td>{{ event.name }}</td>
+            <td>{{ event.date | date:'d. M. yyyy.' }}</td>
+            <td>{{ event.location || '-' }}</td>
+            <td>{{ event.capacity }}</td>
+            <td>
+              <span class="badge">{{ event.registeredUsers?.length ?? 0 }}</span>
+            </td>
+            <td>
+              <span class="status-chip" [class.finished]="event.status === 'finished'">
+                {{ event.status === 'finished' ? 'Završen' : 'Aktivan' }}
+              </span>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="6" class="empty-row">Nema događaja u odabranom periodu.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CHART -->
+    @if(filteredEvents.length > 0) {
+    <div class="report-card">
+      <h2>Grafički prikaz sudionika</h2>
+      <div class="chart-wrapper">
+        <p-chart type="bar" [data]="eventChartData" [options]="eventChartOptions" />
+      </div>
+    </div>
+    }
+
+    <!-- DETALJI POJEDINOG DOGAĐAJA -->
+    <div class="report-card">
+      <h2>Detalji pojedinog događaja</h2>
+      <div class="filter-field" style="max-width: 360px;">
+        <label>Odaberi događaj</label>
+        <select [(ngModel)]="selectedEventId" (ngModelChange)="onEventSelect()">
+          <option value="">-- Odaberi --</option>
+          @for(event of allEvents; track event._id) {
+          <option [value]="event._id">{{ event.name }}</option>
+          }
+        </select>
+      </div>
+
+      @if(selectedEventDetail) {
+      <div class="event-detail-grid">
+        <div class="detail-stat">
+          <span class="detail-label">Datum</span>
+          <span class="detail-value">{{ selectedEventDetail.date | date:'d. M. yyyy. HH:mm' }}</span>
+        </div>
+        <div class="detail-stat">
+          <span class="detail-label">Lokacija</span>
+          <span class="detail-value">{{ selectedEventDetail.location || '-' }}</span>
+        </div>
+        <div class="detail-stat">
+          <span class="detail-label">Kapacitet</span>
+          <span class="detail-value">{{ selectedEventDetail.capacity }}</span>
+        </div>
+        <div class="detail-stat">
+          <span class="detail-label">Prijavljeni</span>
+          <span class="detail-value">{{ selectedEventDetail.registeredUsers?.length ?? 0 }}</span>
+        </div>
+        <div class="detail-stat">
+          <span class="detail-label">Catering</span>
+          <span class="detail-value">{{ selectedEventDetail.catering ? 'DA' : 'NE' }}</span>
+        </div>
+        <div class="detail-stat">
+          <span class="detail-label">Status</span>
+          <span class="detail-value">{{ selectedEventDetail.status === 'finished' ? 'Završen' : 'Aktivan' }}</span>
+        </div>
+      </div>
+
+      @if(selectedEventDetail.registeredUsers?.length > 0) {
+      <table class="report-table" style="margin-top: 1rem;">
+        <thead>
+          <tr>
+            <th>Ime i prezime</th>
+            <th>Email</th>
+            <th>Alergije</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(user of selectedEventDetail.registeredUsers; track user._id) {
+          <tr>
+            <td>{{ user.name }} {{ user.last_name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.allergies || '-' }}</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+      }
+      }
+    </div>
+
+  </div>
+  }
+
+  <!-- CONTENT TAB -->
+  @if(activeTab === 'content') {
+  <div class="report-section">
+
+    <!-- SUMMARY KARTICE -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <span class="summary-label">Ukupno sadržaja</span>
+        <span class="summary-value">{{ filteredContents.length }}</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-label">Ukupno zahtjeva</span>
+        <span class="summary-value">{{ filteredRequests.length }}</span>
+      </div>
+    </div>
+
+    <!-- TABELA SADRŽAJA -->
+    <div class="report-card">
+      <h2>Dodani sadržaj u periodu</h2>
+      <table class="report-table">
+        <thead>
+          <tr>
+            <th>Naziv</th>
+            <th>Autor</th>
+            <th>Tip</th>
+            <th>Datum dodavanja</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(content of filteredContents; track content._id) {
+          <tr>
+            <td>{{ content.title }}</td>
+            <td>{{ content.author }}</td>
+            <td>{{ content.type }}</td>
+            <td>{{ content.createdAt | date:'d. M. yyyy.' }}</td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="4" class="empty-row">Nema sadržaja u odabranom periodu.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ZAHTJEVI PO STATUSU -->
+    <div class="report-grid">
+
+      <div class="report-card">
+        <h2>Zahtjevi po statusu</h2>
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Broj zahtjeva</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(group of requestStatusGroups; track group.status) {
+            <tr>
+              <td><span class="status-chip">{{ group.status }}</span></td>
+              <td><span class="badge">{{ group.count }}</span></td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="2" class="empty-row">Nema zahtjeva u odabranom periodu.</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if(filteredRequests.length > 0) {
+      <div class="report-card">
+        <h2>Grafički prikaz zahtjeva</h2>
+        <div class="chart-wrapper chart-wrapper--pie">
+          <p-chart type="doughnut" [data]="requestChartData" [options]="requestChartOptions" />
+        </div>
+      </div>
+      }
+
+    </div>
+
+  </div>
+  }
+
+</div>

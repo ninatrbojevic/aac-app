@@ -1,3 +1,4 @@
+import { ReportsComponent } from './reports/reports.component';
 import { DigitalContentRequestsComponent } from './digital-content-requests/digital-content-requests.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { EventsComponent } from './events/events.component';
@@ -21,6 +22,7 @@ export const routes: Routes = [
   { path: 'digital-content', component: DigitalContentComponent, canActivate: [authGuard] },
   { path: 'settings', component: UserProfileComponent, canActivate: [authGuard] },
   { path: 'digital-content-requests', component: DigitalContentRequestsComponent, canActivate: [authGuard] },
+  { path: 'reports', component: ReportsComponent, canActivate: [authGuard] },
 
 
   { path: '**', redirectTo: 'login' }
