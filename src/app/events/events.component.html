@@ -54,15 +54,8 @@
         <button pButton label="Obriši" class="p-button-danger p-button-outlined p-button-sm"
           (click)="confirmDelete(event)">
         </button>}
-        <!-- @if(!isAdmin()){
-                    <button
-                      pButton
-                      class="custom-btn p-button-sm"
-                      (click)="event.isJoined = !event.isJoined"
-                      [label]="event.isJoined ? 'Odjavi se' : 'Prijavi se'">
-                    </button>
-                  } -->
-        @if(!isAdmin()){
+
+        @if(!isAdmin() && event.status !== 'finished'){
         <button pButton class="custom-btn p-button-sm" (click)="toggleRegistration(event)"
           [label]="event.isRegistered ? 'Odjavi se' : 'Prijavi se'">
         </button>
@@ -117,6 +110,17 @@
       <span>{{ selectedEvent.collaborators ? 'DA' : 'NE' }}</span>
     </div>
 
+    @if(selectedEvent.collaborators && selectedEvent.collaboratorsList?.length > 0) {
+    <div class="detail-description">
+      <span>👥 Popis suradnika:</span>
+      <ul style="margin: 0.5rem 0 0 0; padding-left: 1.2rem;">
+        <li *ngFor="let c of selectedEvent.collaboratorsList">
+          {{ c.name }} {{ c.last_name }}
+        </li>
+      </ul>
+    </div>
+    }
+
     <div class="detail-description">
       <span>📝 Opis:</span>
       <p>{{ selectedEvent.description }}</p>
@@ -169,12 +173,46 @@
         <p-checkbox formControlName="catering" binary="true"></p-checkbox>
         <label>Catering</label>
       </div>
-
       <div class="field-checkbox">
         <p-checkbox formControlName="collaborators" binary="true"></p-checkbox>
         <label>Suradnici</label>
       </div>
     </div>
+
+    @if(form.get('collaborators')?.value) {
+    <div class="field">
+      <label>Dodaj suradnike</label>
+      <div style="display: flex; gap: 0.5rem; position: relative;">
+        <div style="flex: 1; position: relative;">
+          <input pInputText [(ngModel)]="collaboratorSearchQuery" [ngModelOptions]="{standalone: true}"
+            (ngModelChange)="searchCollaborators()" placeholder="Pretraži po imenu..." style="width: 100%;" />
+          <ul *ngIf="filteredCollaborators.length > 0" style="position: absolute; z-index: 1100; background: white;
+                     border: 1px solid #dee2e6; border-radius: 6px;
+                     list-style: none; margin: 0; padding: 4px 0; width: 100%;
+                     box-shadow: 0 4px 12px rgba(0,0,0,0.15); top: 100%; left: 0;">
+            <li *ngFor="let user of filteredCollaborators" (click)="selectCollaborator(user)"
+              style="padding: 8px 12px; cursor: pointer;" onmouseover="this.style.background='var(--surface-hover)'"
+              onmouseout="this.style.background='transparent'">
+              {{ user.name }} {{ user.last_name }}
+            </li>
+          </ul>
+        </div>
+        <button pButton label="Dodaj" icon="pi pi-plus" class="custom-btn" [disabled]="!selectedCollaboratorToAdd"
+          type="button" (click)="addCollaboratorToForm()">
+        </button>
+      </div>
+
+      <ul *ngIf="pendingCollaborators.length > 0" style="list-style: none; padding: 0; margin-top: 0.5rem;">
+        <li *ngFor="let c of pendingCollaborators" style="display: flex; justify-content: space-between; align-items: center;
+                   padding: 6px 0; border-bottom: 1px solid #eee; font-size: 14px;">
+          <span>{{ c.name }} {{ c.last_name }}</span>
+          <button pButton icon="pi pi-times" class="p-button-danger p-button-text p-button-sm"
+            (click)="removeCollaboratorFromForm(c)">
+          </button>
+        </li>
+      </ul>
+    </div>
+    }
 
     <div class="dialog-footer">
       <button pButton type="button" label="Odustani" class="p-button-secondary" (click)="visibleDialogForm = false">
@@ -232,8 +270,14 @@
 
     <ul *ngIf="getRegisteredUsers().length > 0" style="list-style: none; padding: 0; margin: 0;">
       <li *ngFor="let user of getRegisteredUsers()" style="display: flex; justify-content: space-between; align-items: center;
-               padding: 8px 0; border-bottom: 1px solid var(--surface-border);">
-        <span>{{ user.name }} {{ user.last_name }}</span>
+         padding: 8px 0; border-bottom: 1px solid var(--surface-border);">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span>{{ user.name }} {{ user.last_name }}</span>
+          <span *ngIf="selectedEvent?.catering && user.allergies"
+            style="font-size: 12px; color: var(--text-color-secondary);">
+            Alergije: {{ user.allergies }}
+          </span>
+        </div>
         <button pButton label="Ukloni" class="p-button-danger p-button-outlined p-button-sm"
           (click)="removeUserFromEvent(user)">
         </button>
@@ -247,5 +291,23 @@
     </button>
   </ng-template>
 
+</p-dialog>
+
+<!-- ALERGIJE DIALOG -->
+<p-dialog header="Prijava na događaj" [(visible)]="visibleAllergiesDialog" [modal]="true" [style]="{ width: '420px' }"
+  [draggable]="false" class="event-dialog">
+  <div class="dialog-form">
+    <p>Događaj <strong>{{ pendingRegistrationEvent?.name }}</strong> uključuje catering.</p>
+    <div class="field" style="margin-top: 1rem;">
+      <label>Alergije (neobavezno)</label>
+      <input pInputText [(ngModel)]="allergiesInput" placeholder="npr. gluten, laktoza..." />
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Odustani" class="p-button-secondary" (click)="visibleAllergiesDialog = false">
+    </button>
+    <button pButton type="button" label="Prijavi se" class="custom-btn" (click)="confirmRegistrationWithAllergies()">
+    </button>
+  </ng-template>
 </p-dialog>
 <p-toast />

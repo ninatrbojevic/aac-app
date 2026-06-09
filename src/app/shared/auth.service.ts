@@ -9,6 +9,7 @@ export interface CurrentUser {
   email: string;
   role: UserRole;
   [key: string]: any;
+  allergies?: string;
 }
 
 @Injectable({

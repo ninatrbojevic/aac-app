@@ -61,6 +61,15 @@ export class EventsComponent implements OnInit {
   userSearchQuery: string = '';
   selectedUserToAdd: CurrentUser | null = null;
 
+  collaboratorSearchQuery = '';
+  filteredCollaborators: CurrentUser[] = [];
+  selectedCollaboratorToAdd: CurrentUser | null = null;
+  pendingCollaborators: CurrentUser[] = [];
+
+  visibleAllergiesDialog = false;
+  pendingRegistrationEvent: any = null;
+  allergiesInput = '';
+
   constructor(
     private eventService: EventService,
     private authService: AuthService,
@@ -94,7 +103,7 @@ export class EventsComponent implements OnInit {
       next: data => {
         this.events = (data || []).map(event => ({
           ...event,
-          status: event.status ?? 'active',  
+          status: event.status ?? 'active',
           isRegistered: this.currentUser
             ? event.registeredUsers?.some((u: CurrentUser) => u._id === this.currentUser!._id) ?? false
             : false
@@ -112,12 +121,17 @@ export class EventsComponent implements OnInit {
 
   showCreateDialog(): void {
     this.selectedEvent = null;
+    this.pendingCollaborators = [];
+    this.collaboratorSearchQuery = '';
     this.form.reset();
+    this.loadAllUsers();
     this.visibleDialogForm = true;
   }
 
   openUpdateDialog(event: any): void {
     this.selectedEvent = event;
+    this.pendingCollaborators = event.collaboratorsList ?? [];
+    this.collaboratorSearchQuery = '';
     this.form.reset();
     this.form.patchValue({
       name: event.name,
@@ -129,6 +143,7 @@ export class EventsComponent implements OnInit {
       collaborators: event.collaborators,
       duration: event.duration
     });
+    this.loadAllUsers();
     this.visibleDialogForm = true;
   }
 
@@ -165,52 +180,49 @@ export class EventsComponent implements OnInit {
   }
 
   private createEvent(): void {
-    const payload = this.form.value;
+    const payload = {
+      ...this.form.value,
+      collaboratorsList: this.pendingCollaborators.map(c => ({
+        _id: c._id,
+        name: c.name,
+        last_name: c.last_name
+      }))
+    };
     this.eventService.createEvent(payload).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Event created successfully.',
-        });
+        this.messageService.add({ severity: 'success', summary: 'Uspjeh!', detail: 'Događaj je kreiran.' });
         this.closeDialog();
         this.loadEvents();
       },
       error: (err) => {
         console.error('CREATE ERROR:', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to create event.',
-        });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Kreiranje događaja nije uspjelo.' });
       }
     });
   }
 
   private updateEvent(): void {
     if (!this.selectedEvent) return;
-    const payload = this.form.value;
+    const payload = {
+      ...this.form.value,
+      collaboratorsList: this.pendingCollaborators.map(c => ({
+        _id: c._id,
+        name: c.name,
+        last_name: c.last_name
+      }))
+    };
     this.eventService.updateEvent(this.selectedEvent._id, payload).subscribe({
       next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Event updated successfully.',
-        });
+        this.messageService.add({ severity: 'success', summary: 'Uspjeh!', detail: 'Događaj je ažuriran.' });
         this.closeDialog();
         this.loadEvents();
       },
       error: (err) => {
         console.error('UPDATE ERROR:', err);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to update event.',
-        });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Događaj nije ažuriran.' });
       }
     });
   }
-
   confirmDelete(event: any): void {
     this.confirmationService.confirm({
       message: `Jeste li sigurni da želite obrisati događaj: ${event.name}?`,
@@ -231,8 +243,8 @@ export class EventsComponent implements OnInit {
       next: () => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Success',
-          detail: 'Event deleted successfully.',
+          summary: 'Uspjeh!',
+          detail: 'Događaj je obrisan.',
         });
         this.loadEvents();
       },
@@ -240,7 +252,7 @@ export class EventsComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to delete event.',
+          detail: 'Događaj nije obrisan.',
         });
       }
     });
@@ -250,6 +262,8 @@ export class EventsComponent implements OnInit {
   private closeDialog(): void {
     this.visibleDialogForm = false;
     this.selectedEvent = null;
+    this.pendingCollaborators = [];
+    this.collaboratorSearchQuery = '';
     this.form.reset();
     this.initForm();
   }
@@ -260,7 +274,7 @@ export class EventsComponent implements OnInit {
 
   toggleRegistration(event: any): void {
     if (!this.currentUser) return;
-
+  
     if (event.isRegistered) {
       this.confirmationService.confirm({
         message: `Jeste li sigurni da se želite odjaviti s događaja "${event.name}"?`,
@@ -280,39 +294,49 @@ export class EventsComponent implements OnInit {
               this.messageService.add({
                 severity: 'info',
                 summary: 'Odjava uspješna',
-                detail: `Uspješno ste se odjavili s događaja "${event.name}".`,
+                detail: `Uspješno ste se odjavili s događaja "${event.name}".`
               });
             },
             error: () => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Failed to unregister from event.',
-              });
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to unregister from event.' });
             }
           });
         }
       });
     } else {
-      this.eventService.registerForEvent(event._id, this.currentUser).subscribe({
-        next: (updatedEvent: any) => {
-          event.isRegistered = true;
-          event.registeredUsers = updatedEvent.registeredUsers;
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Prijava uspješna',
-            detail: `Uspješno ste se prijavili na događaj "${event.name}".`,
-          });
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to register for event.',
-          });
-        }
-      });
+      if (event.catering) {
+        this.pendingRegistrationEvent = event;
+        this.allergiesInput = '';
+        this.visibleAllergiesDialog = true;
+      } else {
+        this.registerForEvent(event, '');
+      }
     }
+  }
+  
+  confirmRegistrationWithAllergies(): void {
+    if (!this.pendingRegistrationEvent) return;
+    this.visibleAllergiesDialog = false;
+    this.registerForEvent(this.pendingRegistrationEvent, this.allergiesInput);
+  }
+  
+  private registerForEvent(event: any, allergies: string): void {
+    if (!this.currentUser) return;
+    const payload = { ...this.currentUser, allergies };
+    this.eventService.registerForEvent(event._id, payload).subscribe({
+      next: (updatedEvent: any) => {
+        event.isRegistered = true;
+        event.registeredUsers = updatedEvent.registeredUsers;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Prijava uspješna',
+          detail: `Uspješno ste se prijavili na događaj "${event.name}".`
+        });
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to register for event.' });
+      }
+    });
   }
 
   getRegisteredUsers(): CurrentUser[] {
@@ -457,5 +481,36 @@ export class EventsComponent implements OnInit {
 
   get finishedCount(): number {
     return this.events.filter(e => e.status === 'finished').length;
+  }
+
+  searchCollaborators(): void {
+    const q = this.collaboratorSearchQuery.toLowerCase().trim();
+    if (!q) {
+      this.filteredCollaborators = [];
+      return;
+    }
+    const alreadyAdded = this.pendingCollaborators.map(c => c._id);
+    this.filteredCollaborators = this.allUsers.filter(u =>
+      !alreadyAdded.includes(u._id) &&
+      (`${u.name} ${u.last_name}`).toLowerCase().includes(q)
+    );
+  }
+
+  selectCollaborator(user: CurrentUser): void {
+    this.selectedCollaboratorToAdd = user;
+    this.collaboratorSearchQuery = `${user.name} ${user.last_name}`;
+    this.filteredCollaborators = [];
+  }
+
+  addCollaboratorToForm(): void {
+    if (!this.selectedCollaboratorToAdd) return;
+    this.pendingCollaborators.push(this.selectedCollaboratorToAdd);
+    this.selectedCollaboratorToAdd = null;
+    this.collaboratorSearchQuery = '';
+    this.filteredCollaborators = [];
+  }
+
+  removeCollaboratorFromForm(user: CurrentUser): void {
+    this.pendingCollaborators = this.pendingCollaborators.filter(c => c._id !== user._id);
   }
 }
