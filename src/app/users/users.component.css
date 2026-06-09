@@ -9,6 +9,7 @@
     font-size: 24px;
     font-weight: 600;
     color: #1e293b;
+    margin-bottom: 1.5rem;
 }
 
 /* SEARCH */
@@ -18,6 +19,7 @@
 
 .search-bar input {
     width: 430px;
+    max-width: 100%;
 }
 
 /* TABLE */
@@ -52,6 +54,12 @@
     background: #ffffff !important;
 }
 
+/* Horizontalni scroll za tablicu na malim ekranima */
+::ng-deep .p-datatable-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 /* ACTION BUTTONS */
 td .p-button {
     font-size: 13px;
@@ -68,6 +76,7 @@ td .p-button {
     border-radius: 16px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     background: #ffffff !important;
+    width: min(520px, 95vw) !important;
 }
 
 ::ng-deep .p-dialog .p-dialog-header {
@@ -148,4 +157,51 @@ td .p-button {
     padding-top: 0.75rem;
     border-top: 1px solid #e5e7eb;
     margin-top: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* ── TABLET (max 900px) ── */
+@media (max-width: 900px) {
+    .users-page {
+        padding: 1.5rem;
+    }
+}
+
+/* ── MOBILE (max 600px) ── */
+@media (max-width: 600px) {
+    .users-page {
+        padding: 1rem;
+    }
+
+    .users-page h3 {
+        font-size: 20px;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+
+    ::ng-deep .p-datatable .p-datatable-thead > tr > th,
+    ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+        padding: 0.65rem 0.75rem;
+        font-size: 13px;
+    }
+
+    td .p-button {
+        padding: 0.35rem 0.6rem;
+        font-size: 12px;
+    }
+
+    .edit_button {
+        margin-right: 0.25rem;
+    }
+
+    .app-dialog-actions {
+        flex-direction: column-reverse;
+    }
+
+    .app-dialog-actions button {
+        width: 100%;
+        justify-content: center;
+    }
 }

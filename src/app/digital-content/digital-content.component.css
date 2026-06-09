@@ -10,6 +10,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .page-header h1 {
@@ -24,6 +26,7 @@
 
 .search-bar input {
     width: 430px;
+    max-width: 100%;
 }
 
 /* GRID */
@@ -63,6 +66,7 @@
 .card-actions {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 /* DIALOG */
@@ -70,6 +74,7 @@
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    width: min(560px, 95vw) !important;
 }
 
 ::ng-deep .event-dialog .p-dialog-header {
@@ -93,10 +98,12 @@
     justify-content: space-between;
     font-size: 14px;
     margin-bottom: 0.6rem;
+    gap: 1rem;
 }
 
 .detail-row span:first-child {
     color: #6b7280;
+    flex-shrink: 0;
 }
 
 .detail-description span {
@@ -142,6 +149,7 @@
     gap: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid #e5e7eb;
+    flex-wrap: wrap;
 }
 
 /* UNIVERZALNI BUTTON */
@@ -169,6 +177,68 @@
     background-color: #a5b4fc !important;
     cursor: not-allowed;
 }
-.p-button-sm{
+
+.p-button-sm {
     text-decoration: none;
+}
+
+/* ── TABLET (max 900px) ── */
+@media (max-width: 900px) {
+    .events-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+/* ── MOBILE (max 600px) ── */
+@media (max-width: 600px) {
+    .events-page {
+        padding: 1rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-header h1 {
+        font-size: 22px;
+    }
+
+    .page-header .custom-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .card-actions {
+        flex-direction: column;
+    }
+
+    .card-actions .custom-btn,
+    .card-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .field-row {
+        grid-template-columns: 1fr;
+    }
+
+    .dialog-footer {
+        flex-direction: column-reverse;
+    }
+
+    .dialog-footer .custom-btn,
+    .dialog-footer button {
+        width: 100%;
+        justify-content: center;
+    }
 }

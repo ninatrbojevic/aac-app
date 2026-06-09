@@ -10,6 +10,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .page-header h1 {
@@ -24,6 +26,7 @@
 
 .search-bar input {
     width: 430px;
+    max-width: 100%;
 }
 
 /* GRID */
@@ -63,6 +66,7 @@
 .card-actions {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 /* DIALOG */
@@ -70,6 +74,7 @@
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    width: min(560px, 95vw) !important;
 }
 
 ::ng-deep .event-dialog .p-dialog-header {
@@ -93,10 +98,12 @@
     justify-content: space-between;
     font-size: 14px;
     margin-bottom: 0.6rem;
+    gap: 1rem;
 }
 
 .detail-row span:first-child {
     color: #6b7280;
+    flex-shrink: 0;
 }
 
 .detail-description span {
@@ -142,6 +149,7 @@
     padding: 0.75rem;
     background: #f8fafc;
     border-radius: 8px;
+    flex-wrap: wrap;
 }
 
 .field-checkbox {
@@ -157,45 +165,45 @@
     gap: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid #e5e7eb;
+    flex-wrap: wrap;
 }
 
 /* UNIVERZALNI BUTTON */
 .custom-btn {
-    background-color: #253b5d !important; /* glavna boja */
+    background-color: #253b5d !important;
     border: none !important;
     color: #fff !important;
     transition: none !important;
 }
 
-/* HOVER (isti kao normal) */
 .custom-btn:hover {
     background-color: #6d92bc !important;
     color: #fff !important;
 }
 
-/* ACTIVE */
 .custom-btn:active {
     background-color: #6366f1 !important;
 }
 
-/* FOCUS */
 .custom-btn:focus {
     box-shadow: none !important;
 }
 
-/* DISABLED */
 .custom-btn:disabled {
     background-color: #a5b4fc !important;
     cursor: not-allowed;
 }
+
+/* TABS */
 .tabs {
     display: flex;
     gap: 0;
     margin-bottom: 1.5rem;
     border-bottom: 2px solid #e0e0e0;
-  }
-  
-  .tab-btn {
+
+}
+
+.tab-btn {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -209,27 +217,93 @@
     color: #888;
     cursor: pointer;
     transition: all 0.2s;
-  }
-  
-  .tab-btn:hover {
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
     color: #333;
-  }
-  
-  .tab-btn.active {
+}
+
+.tab-btn.active {
     color: #1976d2;
     border-bottom-color: #1976d2;
-  }
-  
-  .tab-count {
+}
+
+.tab-count {
     background: #e0e0e0;
     color: #555;
     font-size: 11px;
     font-weight: 600;
     padding: 2px 7px;
     border-radius: 10px;
-  }
-  
-  .tab-btn.active .tab-count {
+}
+
+.tab-btn.active .tab-count {
     background: #e3f2fd;
     color: #1976d2;
-  }
+}
+
+/* ── TABLET (max 900px) ── */
+@media (max-width: 900px) {
+    .events-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+/* ── MOBILE (max 600px) ── */
+@media (max-width: 600px) {
+    .events-page {
+        padding: 1rem;
+    }
+
+    .page-header h1 {
+        font-size: 22px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-header .custom-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .search-bar input {
+        width: 100%;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .field-row {
+        grid-template-columns: 1fr;
+    }
+
+    .tab-btn {
+        padding: 0.65rem 1rem;
+        font-size: 13px;
+    }
+
+    .card-actions {
+        flex-direction: column;
+    }
+
+    .card-actions .custom-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .dialog-footer {
+        flex-direction: column-reverse;
+    }
+
+    .dialog-footer .custom-btn,
+    .dialog-footer button {
+        width: 100%;
+        justify-content: center;
+    }
+}
