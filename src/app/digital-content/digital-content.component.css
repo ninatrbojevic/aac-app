@@ -169,3 +169,6 @@
     background-color: #a5b4fc !important;
     cursor: not-allowed;
 }
+.p-button-sm{
+    text-decoration: none;
+}

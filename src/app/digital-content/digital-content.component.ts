@@ -52,8 +52,6 @@ export class DigitalContentComponent implements OnInit {
 
   visibleDigitalContentRequestDialogForm = false;
 
-  visiblePreviewDialog = false;
-
   digitalContentForm!: FormGroup;
 
   digitalContentRequestForm!: FormGroup;
@@ -65,12 +63,6 @@ export class DigitalContentComponent implements OnInit {
     {label: 'Audio', value: 'audio'},
     {label: 'Dokument', value: 'dokument'},
     {label: 'Slika', value: 'slika'},
-  ];
-
-  statusOptions = [
-    {label: 'U obradi', value: 'u_obradi'},
-    {label: 'Odobren', value: 'odobren'},
-    {label: 'Odbijen', value: 'odbijen'},
   ];
 
   constructor(
@@ -100,10 +92,8 @@ export class DigitalContentComponent implements OnInit {
     this.digitalContentForm = new FormGroup({
       title: new FormControl('', [Validators.required]),
       type: new FormControl('', [Validators.required]),
-      status: new FormControl('u_obradi', [Validators.required]),
       author: new FormControl('', [Validators.required]),
-      request_id: new FormControl('', [Validators.required]),
-      url: new FormControl('')
+      url: new FormControl('', [Validators.required])
     });
   }
 
@@ -135,17 +125,10 @@ export class DigitalContentComponent implements OnInit {
     this.digitalContentForm.patchValue({
       title: item.title,
       type: item.type,
-      status: item.status,
       author: item.author,
-      request_id: item.request_id,
       url: item.url,
     });
     this.visibleDigitalContentDialogForm = true;
-  }
-
-  openPreviewDialog(item: any) {
-    this.selectedDigitalContentItem = item;
-    this.visiblePreviewDialog = true;
   }
 
   submitDigitalContentForm() {
