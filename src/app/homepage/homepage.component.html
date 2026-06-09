@@ -100,14 +100,14 @@
       }
         @if(isAdmin()) {
           <p-card class="clickable-card" (click)="goTo('/digital-content-requests')" tabindex="0" role="button">
-              <i class="pi pi-chart-bar icon"></i>
+              <i class="pi pi-table icon"></i>
               <h3>Zahtjevi</h3>
               <p>Pregled i upravljanje zahtjevima za digitalizaciju</p>
           </p-card>
         }
         @if(!isAdmin()) {
             <p-card class="clickable-card" (click)="goTo('/digital-content-requests')" tabindex="0" role="button">
-                <i class="pi pi-chart-bar icon"></i>
+                <i class="pi pi-table icon"></i>
                 <h3>Moji zahtjevi</h3>
                 <p>Pregled zahtjevia za digitalizaciju</p>
             </p-card>

@@ -59,10 +59,10 @@ export class DigitalContentComponent implements OnInit {
   selectedDigitalContentItem: any | null = null;
 
   vrsteOptions = [
-    {label: 'Video', value: 'video'},
-    {label: 'Audio', value: 'audio'},
-    {label: 'Dokument', value: 'dokument'},
-    {label: 'Slika', value: 'slika'},
+    {label: 'Video', value: 'Video'},
+    {label: 'Audio', value: 'Audio'},
+    {label: 'Dokument', value: 'Dokument'},
+    {label: 'Slika', value: 'Slika'},
   ];
 
   constructor(
@@ -252,11 +252,11 @@ export class DigitalContentComponent implements OnInit {
 
   vrstaIcon(type: string): string {
     const icons: Record<string, string> = {
-      video: '🎬',
-      audio: '🎵',
-      dokument: '📄',
-      slika: '🖼️',
+      Video: 'pi pi-video',
+      Audio: 'pi pi-volume-up',
+      Dokument: 'pi pi-file-pdf',
+      Slika: 'pi pi-image',
     };
-    return icons[type] ?? '📁';
+    return icons[type] ?? 'pi pi-folder';
   }
 }

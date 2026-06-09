@@ -27,7 +27,7 @@
     <div class="event-card" *ngFor="let item of filteredDigitalContentItems">
 
       <div class="card-content">
-        <h3>{{ vrstaIcon(item.type) }} {{ item.title }}</h3>
+        <h3><i [class]="vrstaIcon(item.type)"></i> {{ item.title }}</h3>
         <p class="meta">
           {{ item.createdAt | date:'d. MMMM yyyy.' : '' : 'hr' }}
           <span>|</span>
