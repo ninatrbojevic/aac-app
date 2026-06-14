@@ -130,52 +130,43 @@ export class UserProfileComponent implements OnInit {
       this.profileForm.markAllAsTouched();
       return;
     }
-
-    const username = this.profileForm.get('username')?.value;
-
+  
+    const formValue = this.profileForm.value;
+    const username = formValue.username?.trim();
+  
     if (username && username.length < 3) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Upozorenje',
-        detail: 'Korisničko ime mora imati najmanje 3 znaka.'
-      });
+      this.messageService.add({ severity: 'warn', summary: 'Upozorenje', detail: 'Korisničko ime mora imati najmanje 3 znaka.' });
       return;
     }
-
+  
     if (this.usernameZauzet) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Upozorenje',
-        detail: 'Korisničko ime je već zauzeto.'
-      });
+      this.messageService.add({ severity: 'warn', summary: 'Upozorenje', detail: 'Korisničko ime je već zauzeto.' });
       return;
     }
-
-    this.userService
-      .updateUser(this.currentUser._id, this.profileForm.value)
-      .subscribe({
-        next: (updatedUser: any) => {
-          localStorage.setItem(
-            'currentUser',
-            JSON.stringify(updatedUser)
-          );
-
-          this.currentUser = updatedUser;
-
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Uspješno',
-            detail: 'Podaci su uspješno ažurirani.'
-          });
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Greška',
-            detail: 'Ažuriranje nije uspjelo.'
-          });
-        }
-      });
+  
+    const payload: any = {
+      name: formValue.name,
+      last_name: formValue.last_name,
+      email: formValue.email,
+      organization: formValue.organization,
+      title: formValue.title,
+    };
+  
+    if (username && username.length >= 3) {
+      payload.username = username;
+    }
+    console.log('PAYLOAD:', payload);
+  
+    this.userService.updateUser(this.currentUser._id, payload).subscribe({
+      next: (updatedUser: any) => {
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        this.currentUser = updatedUser;
+        this.messageService.add({ severity: 'success', summary: 'Uspješno', detail: 'Podaci su uspješno ažurirani.' });
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Greška', detail: 'Ažuriranje nije uspjelo.' });
+      }
+    });
   }
 
   changePassword(): void {
