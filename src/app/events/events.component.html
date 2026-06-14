@@ -31,6 +31,11 @@
 
   <!-- GRID -->
   <div class="events-grid">
+    <div *ngIf="tabbedEvents.length === 0" class="empty-state">
+      <i class="pi pi-calendar"></i>
+      <p *ngIf="eventSearchQuery">Nema rezultata za "{{ eventSearchQuery }}".</p>
+      <p *ngIf="!eventSearchQuery">Nema {{ activeTab === 'finished' ? 'završenih' : 'aktivnih' }} događaja.</p>
+    </div>
     <div class="event-card" *ngFor="let event of tabbedEvents">
 
       <div class="card-content">

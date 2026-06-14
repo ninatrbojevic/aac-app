@@ -242,3 +242,22 @@
         justify-content: center;
     }
 }
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    color: #aaa;
+    gap: 1rem;
+    width: 100%;
+  }
+  
+  .empty-state i {
+    font-size: 3rem;
+  }
+  
+  .empty-state p {
+    font-size: 1rem;
+    margin: 0;
+  }

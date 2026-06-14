@@ -24,6 +24,11 @@
 
   <!-- GRID -->
   <div class="events-grid">
+    <div *ngIf="filteredDigitalContentItems.length === 0" class="empty-state">
+      <i class="pi pi-file"></i>
+      <p *ngIf="contentSearchQuery">Nema rezultata za "{{ contentSearchQuery }}".</p>
+      <p *ngIf="!contentSearchQuery">Nema dostupnog sadržaja.</p>
+    </div>
     <div class="event-card" *ngFor="let item of filteredDigitalContentItems">
 
       <div class="card-content">
