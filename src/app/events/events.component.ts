@@ -304,13 +304,26 @@ export class EventsComponent implements OnInit {
         }
       });
     } else {
-      if (event.catering) {
-        this.pendingRegistrationEvent = event;
-        this.allergiesInput = '';
-        this.visibleAllergiesDialog = true;
-      } else {
-        this.registerForEvent(event, '');
-      }
+      const payload = {
+        ...this.currentUser,
+        allergies: event.catering ? this.allergiesInput : '',
+        title: (this.currentUser as any).title || ''
+      };
+      this.eventService.registerForEvent(event._id, payload).subscribe({
+        next: (updatedEvent: any) => {
+          event.isRegistered = true;
+          event.registeredUsers = updatedEvent.registeredUsers;
+          this.allergiesInput = '';
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Prijava uspješna',
+            detail: `Uspješno ste se prijavili na događaj "${event.name}".`
+          });
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to register for event.' });
+        }
+      });
     }
   }
   
