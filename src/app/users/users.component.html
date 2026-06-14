@@ -1,119 +1,117 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="m-0">Korisnici</h3>
-  
-    <p-button
-      label="Dodaj novog korisnika"
-      icon="pi pi-plus"
-      severity="secondary"
-      (click)="showCreateDialog()">
-    </p-button>
-  </div>
-  
-  <p-confirmDialog></p-confirmDialog>
+  <h3 class="m-0">Korisnici</h3>
 
-  <!-- SEARCH -->
-  <div class="search-bar">
-    <p-iconfield>
-      <p-inputicon styleClass="pi pi-search" />
-      <input pInputText [(ngModel)]="userSearchQuery" placeholder="Pretraži po imenu, prezimenu, organizaciji, ulozi..." />
-    </p-iconfield>
-  </div>
+  <p-button label="Dodaj novog korisnika" icon="pi pi-plus" severity="secondary" (click)="showCreateDialog()">
+  </p-button>
+</div>
 
-  <p-table [value]="filteredUsers" [tableStyle]="{ 'min-width': '50rem' }">
-    <ng-template #header>
-      <tr>
-        <th>Ime</th>
-        <th>Prezime</th>
-        <th>Email</th>
-        <th>Organizacija</th>
-        <th>Uloga</th>
-        <th>Akcija</th>
-      </tr>
-    </ng-template>
-  
-    <ng-template #body let-user>
-      <tr>
-        <td>{{ user.name }}</td>
-        <td>{{ user.last_name }}</td>
-        <td>
-          {{ user.email }}
-        </td>
-        <td>{{ user.organization }}</td>
-        <td>{{ user.role }}</td>
-        <td>
-          <button
-            pButton
-            severity="secondary"
-            class="edit_button"
-            (click)="openUpdateDialog(user)">
-            Uredi
-          </button>
-  
-          <button
-            pButton
-            severity="danger"
-            (click)="confirmDelete(user)">
-            Obriši
-          </button>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-  
-  <p-dialog
-    [header]="selectedUser ? 'Uredi korisnika' : 'Dodaj novog korisnika'"
-    [modal]="true"
-    [(visible)]="visibleDialogForm"
-    [style]="{ width: '28rem' }"
-  >
-    <p class="text- mb-3">Ispunite informacije o korisniku.</p>
-  
-    <form [formGroup]="form" (ngSubmit)="submit()" class="app-dialog-form">
-  
-      <div class="app-dialog-field">
-        <label for="name" class="app-dialog-label">Ime</label>
-        <input pInputText id="name" formControlName="name" class="app-dialog-control" />
-      </div>
-  
-      <div class="app-dialog-field">
-        <label for="last_name" class="app-dialog-label">Prezime</label>
-        <input pInputText id="last_name" formControlName="last_name" class="app-dialog-control" />
-      </div>
-  
-      <div class="app-dialog-field">
-        <label for="email" class="app-dialog-label">Email</label>
-        <input pInputText id="email" formControlName="email" class="app-dialog-control" />
-      </div>
-  
-      <div class="app-dialog-field">
-        <label for="organization" class="app-dialog-label">Organizacija</label>
-        <input pInputText id="organization" formControlName="organization" class="app-dialog-control" />
-      </div>
-  
-      <div class="app-dialog-field">
-        <label for="role" class="app-dialog-label">Uloga</label>
-        <p-select
-          id="role"
-          formControlName="role"
-          [options]="availableRoles"
-          placeholder="Odaberite ulogu"
-          appendTo="body"
-          class="app-dialog-control app-dialog-select">
-        </p-select>
-      </div>
-  
-      <div class="app-dialog-actions">
-        <p-button
-          label="Cancel"
-          severity="secondary"
-          (click)="visibleDialogForm = false">
-        </p-button>
-  
-        <p-button
-          label="Spremi"
-          (click)="submit()">
-        </p-button>
-      </div>
-  
-    </form>
-  </p-dialog>
+<p-confirmDialog></p-confirmDialog>
+
+<!-- SEARCH -->
+<div class="search-bar">
+  <p-iconfield>
+    <p-inputicon styleClass="pi pi-search" />
+    <input pInputText [(ngModel)]="userSearchQuery"
+      placeholder="Pretraži po imenu, prezimenu, organizaciji, ulozi..." />
+  </p-iconfield>
+</div>
+
+<p-table [value]="filteredUsers" [tableStyle]="{ 'min-width': '50rem' }">
+
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="6" style="text-align: center; padding: 3rem; color: #aaa;">
+        <i class="pi pi-users" style="font-size: 2.5rem; display: block; margin-bottom: 1rem;"></i>
+        <span *ngIf="userSearchQuery">Nema rezultata za "{{ userSearchQuery }}".</span>
+        <span *ngIf="!userSearchQuery">Nema korisnika za prikaz.</span>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th>Ime</th>
+      <th>Prezime</th>
+      <th>Email</th>
+      <th>Organizacija</th>
+      <th>Uloga</th>
+      <th>Akcija</th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-user>
+    <tr>
+      <td>{{ user.name }}</td>
+      <td>{{ user.last_name }}</td>
+      <td>
+        {{ user.email }}
+      </td>
+      <td>{{ user.organization }}</td>
+      <td>{{ user.role }}</td>
+      <td>
+        <button pButton severity="secondary" class="edit_button" (click)="openUpdateDialog(user)">
+          Uredi
+        </button>
+
+        <button pButton severity="danger" (click)="confirmDelete(user)">
+          Obriši
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<p-dialog [header]="selectedUser ? 'Uredi korisnika' : 'Dodaj novog korisnika'" [modal]="true"
+  [(visible)]="visibleDialogForm" [style]="{ width: '28rem' }">
+  <p class="text- mb-3">Ispunite informacije o korisniku.</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="app-dialog-form">
+
+    <div class="app-dialog-field">
+      <label for="name" class="app-dialog-label">Ime</label>
+      <input pInputText id="name" formControlName="name" class="app-dialog-control" />
+    </div>
+
+    <div class="app-dialog-field">
+      <label for="last_name" class="app-dialog-label">Prezime</label>
+      <input pInputText id="last_name" formControlName="last_name" class="app-dialog-control" />
+    </div>
+
+    <div class="app-dialog-field">
+      <label for="email" class="app-dialog-label">Email</label>
+      <input pInputText id="email" formControlName="email" class="app-dialog-control" />
+    </div>
+
+    <div class="app-dialog-field">
+      <label for="organization" class="app-dialog-label">Organizacija</label>
+      <p-select id="organization" formControlName="organization" [options]="organizationOptions" optionLabel="label"
+        optionValue="value" placeholder="Odaberite organizaciju" appendTo="body"
+        class="app-dialog-control app-dialog-select">
+      </p-select>
+    </div>
+
+    <div class="app-dialog-field">
+      <label for="role" class="app-dialog-label">Uloga</label>
+      <p-select id="role" formControlName="role" [options]="availableRoles" placeholder="Odaberite ulogu"
+        appendTo="body" class="app-dialog-control app-dialog-select">
+      </p-select>
+    </div>
+
+    @if(form.get('role')?.value === 'Profesor') {
+    <div class="app-dialog-field">
+      <label for="title" class="app-dialog-label">Titula <span
+          style="color: #aaa; font-size: 12px;">(opcionalno)</span></label>
+      <input pInputText id="title" formControlName="title" class="app-dialog-control" placeholder="npr. doc. dr. sc." />
+    </div>
+    }
+
+    <div class="app-dialog-actions">
+      <p-button label="Cancel" severity="secondary" (click)="visibleDialogForm = false">
+      </p-button>
+
+      <p-button label="Spremi" (click)="submit()">
+      </p-button>
+    </div>
+
+  </form>
+</p-dialog>

@@ -51,6 +51,24 @@ export class UsersComponent implements OnInit {
   visibleDialogForm = false;
 
   readonly rolesForNew = ['Student', 'Gost', 'Profesor'];
+  readonly organizationOptions = [
+    { label: 'Sveučilište u Rijeci', value: 'UNIRI' },
+    { label: 'Akademija primijenjenih umjetnosti', value: 'APURI' },
+    { label: 'Ekonomski fakultet', value: 'EFRI' },
+    { label: 'Fakultet biotehnologije i razvoja lijekova', value: 'FABRI' },
+    { label: 'Fakultet dentalne medicine', value: 'FDMRI' },
+    { label: 'Fakultet informatike i digitalnih tehnologija', value: 'FIDIT' },
+    { label: 'Fakultet za fiziku', value: 'FIZRI' },
+    { label: 'Fakultet za matematiku', value: 'FMRI' },
+    { label: 'Fakultet zdravstvenih studija', value: 'FZSRI' },
+    { label: 'Filozofski fakultet', value: 'FFRI' },
+    { label: 'Građevinski fakultet', value: 'GRADRI' },
+    { label: 'Medicinski fakultet', value: 'MEDRI' },
+    { label: 'Pomorski fakultet', value: 'PFRI' },
+    { label: 'Pravni fakultet', value: 'PRAVRI' },
+    { label: 'Tehnički fakultet', value: 'RITEH' },
+    { label: 'Učiteljski fakultet', value: 'UFRI' },
+  ];
 
   get availableRoles(): string[] {
     if (this.selectedUser?.role === 'Admin') {
@@ -82,7 +100,8 @@ export class UsersComponent implements OnInit {
       last_name: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
       organization: new FormControl(''),
-      role: new FormControl('')
+      role: new FormControl(''),
+      title: new FormControl('')
     });
   }
 
@@ -95,20 +114,17 @@ export class UsersComponent implements OnInit {
 
   openUpdateDialog(user: any) {
     this.selectedUser = user;
-
     this.form.reset();
-
     this.form.patchValue({
       name: user.name,
       last_name: user.last_name,
       email: user.email,
       organization: user.organization,
-      role: user.role
+      role: user.role,
+      title: user.title || ''
     });
-
     this.visibleDialogForm = true;
   }
-
   submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

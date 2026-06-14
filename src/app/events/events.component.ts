@@ -304,26 +304,13 @@ export class EventsComponent implements OnInit {
         }
       });
     } else {
-      const payload = {
-        ...this.currentUser,
-        allergies: event.catering ? this.allergiesInput : '',
-        title: (this.currentUser as any).title || ''
-      };
-      this.eventService.registerForEvent(event._id, payload).subscribe({
-        next: (updatedEvent: any) => {
-          event.isRegistered = true;
-          event.registeredUsers = updatedEvent.registeredUsers;
-          this.allergiesInput = '';
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Prijava uspješna',
-            detail: `Uspješno ste se prijavili na događaj "${event.name}".`
-          });
-        },
-        error: () => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to register for event.' });
-        }
-      });
+      if (event.catering) {
+        this.pendingRegistrationEvent = event;
+        this.allergiesInput = '';
+        this.visibleAllergiesDialog = true;
+      } else {
+        this.registerForEvent(event, '');
+      }
     }
   }
   
@@ -335,11 +322,16 @@ export class EventsComponent implements OnInit {
   
   private registerForEvent(event: any, allergies: string): void {
     if (!this.currentUser) return;
-    const payload = { ...this.currentUser, allergies };
+    const payload = {
+      ...this.currentUser,
+      allergies,
+      title: (this.currentUser as any).title || ''
+    };
     this.eventService.registerForEvent(event._id, payload).subscribe({
       next: (updatedEvent: any) => {
         event.isRegistered = true;
         event.registeredUsers = updatedEvent.registeredUsers;
+        this.allergiesInput = '';
         this.messageService.add({
           severity: 'success',
           summary: 'Prijava uspješna',

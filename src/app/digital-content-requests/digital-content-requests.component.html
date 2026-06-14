@@ -69,7 +69,7 @@
           </span>
         }
         <span><strong>Autor:</strong> {{ req.author }}</span>
-        <span><strong>Oštećenje:</strong> {{ req.impairment }}</span>
+        <span><strong>Poteškoća:</strong> {{ req.impairment }}</span>
         <span><strong>Datum:</strong> {{ req.createdAt | date:'d. MMMM yyyy.' : '' : 'hr' }}</span>
       </div>
 
@@ -144,7 +144,7 @@
     </div>
 
     <div class="field">
-      <label>Oštećenje</label>
+      <label>Poteškoća</label>
       <input pInputText formControlName="impairment" />
     </div>
 
